@@ -1,0 +1,8 @@
+main: me.erksterk.openeventsmc.Main
+name: OpenEventsMC
+version: 0.1
+author: ErkSterk
+softdepend: [WorldEdit, WorldGuard, PlaceholderAPI]
+commands:
+  events:
+    description: General commands for managing OpenEventsMC
