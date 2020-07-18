@@ -2,8 +2,8 @@
  
  
 ## What is OpenEventsMC
-OpenEventsMC is a free and opensource events plugin for your server.
-The project aims too automate popular events thats being ran at event server aswell as keeping it fully configurable and customizable.
+OpenEventsMC is a free and open-source events plugin for your server.
+The project aims to automate the hosting of popular events on Minecraft servers.
 
 ### Features:
 Waterdrop
