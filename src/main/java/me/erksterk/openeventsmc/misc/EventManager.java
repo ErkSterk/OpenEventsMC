@@ -3,11 +3,13 @@ package me.erksterk.openeventsmc.misc;
 import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.ConfigManager;
 import me.erksterk.openeventsmc.events.Event;
+import me.erksterk.openeventsmc.events.OneInTheChamber;
 import me.erksterk.openeventsmc.events.Waterdrop;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,26 +31,51 @@ public class EventManager {
                     e.setType(EventType.WATERDROP);
                     break;
                 }
-            }
-            for (String arena : conf.getEvent().getConfigurationSection(eventname + ".arena").getKeys(false)) {
-                String loc1 = conf.getEvent().getString(eventname + ".arena." + arena + ".loc1");
-                String[] l1 = loc1.split("_");
-
-                String loc2 = conf.getEvent().getString(eventname + ".arena." + arena + ".loc2");
-                String[] l2 = loc2.split("_");
-                Location m1 = new Location(Bukkit.getWorld(l1[0]), Integer.parseInt(l1[1]), Integer.parseInt(l1[2]), Integer.parseInt(l1[3]));
-                Location m2 = new Location(Bukkit.getWorld(l2[0]), Integer.parseInt(l2[1]), Integer.parseInt(l2[2]), Integer.parseInt(l2[3]));
-                Region main = new Region(m1, m2, arena);
-
-                Arena a;
-                if (arena.equalsIgnoreCase("main")) {
-                    a = new Arena(main);
-                } else {
-                    a = e.getArena();
+                case "ONEINTHECHAMBER":{
+                    e = new OneInTheChamber(eventname);
+                    e.setType(EventType.ONEINTHECHAMBER);
                 }
-                a.addRegion(main);
-                e.setArena(a);
-                e.setFields.add("arena." + arena);
+            }
+            if(conf.getEvent().isConfigurationSection(eventname+".arena")) {
+                for (String arena : conf.getEvent().getConfigurationSection(eventname + ".arena").getKeys(false)) {
+                    String loc1 = conf.getEvent().getString(eventname + ".arena." + arena + ".loc1");
+                    String[] l1 = loc1.split("_");
+
+                    String loc2 = conf.getEvent().getString(eventname + ".arena." + arena + ".loc2");
+                    String[] l2 = loc2.split("_");
+                    Location m1 = new Location(Bukkit.getWorld(l1[0]), Integer.parseInt(l1[1]), Integer.parseInt(l1[2]), Integer.parseInt(l1[3]));
+                    Location m2 = new Location(Bukkit.getWorld(l2[0]), Integer.parseInt(l2[1]), Integer.parseInt(l2[2]), Integer.parseInt(l2[3]));
+                    Region main = new Region(m1, m2, arena);
+
+                    Arena a;
+                    if (arena.equalsIgnoreCase("main")) {
+                        a = new Arena(main);
+                    } else {
+                        a = e.getArena();
+                    }
+                    a.addRegion(main);
+                    e.setArena(a);
+                    e.setFields.add("arena." + arena);
+                }
+            }
+            if(conf.getEvent().isConfigurationSection(eventname+".config")) {
+                for (String c : conf.getEvent().getConfigurationSection(eventname + ".config").getKeys(false)) {
+                    String v = conf.getEvent().getString(eventname + ".config." + c);
+                    try {
+                        Field f1 = e.getClass().getField(c);
+                        if (f1.getType().equals(int.class)) {
+                            f1.set(e, Integer.parseInt(v));
+                        } else {
+                            f1.set(e, v);
+                        }
+                        e.setFields.add("config." + c);
+                    } catch (NoSuchFieldException ex) {
+
+                    } catch (IllegalAccessException ex) {
+
+                    }
+                    e.setFields.add("config." + c);
+                }
             }
 
             Main.writeToConsole("&aLoaded Event with name: " + e.getName());
@@ -73,6 +100,21 @@ public class EventManager {
                 for (Region r : a.getAllRegions()) {
                     conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc1", r.getMin().getWorld().getName() + "_" + r.getMin().getBlockX() + "_" + r.getMin().getBlockY() + "_" + r.getMin().getBlockZ());
                     conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc2", r.getMax().getWorld().getName() + "_" + r.getMax().getBlockX() + "_" + r.getMax().getBlockY() + "_" + r.getMax().getBlockZ());
+                }
+            }
+            for (String c : e.requiredFields) {
+                if(c.contains("config.")) {
+                    String f = c.split("\\.")[1];
+                    String v = null;
+                    try {
+                        Field f1 = e.getClass().getField(f);
+                        v = String.valueOf(f1.get(e));
+                    } catch (NoSuchFieldException ex) {
+
+                    } catch (IllegalAccessException ex) {
+
+                    }
+                    conf.getEvent().set(e.getName()+"."+c,v);
                 }
             }
             conf.saveEvent();

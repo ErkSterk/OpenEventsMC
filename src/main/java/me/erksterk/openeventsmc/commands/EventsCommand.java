@@ -13,6 +13,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,6 +40,11 @@ public class EventsCommand implements CommandExecutor {
                                     case "waterdrop": {
                                         e = new Waterdrop(eventname);
                                         e.setType(EventType.WATERDROP);
+                                        break;
+                                    }
+                                    case "oitc": {
+                                        e = new OneInTheChamber(eventname);
+                                        e.setType(EventType.ONEINTHECHAMBER);
                                         break;
                                     }
                                 }
@@ -82,8 +88,6 @@ public class EventsCommand implements CommandExecutor {
                                             String field = args[2].toLowerCase();
                                             if(e.requiredFields.contains(field)){
                                                 if(field.contains("arena.")){
-
-
                                                     Selection sel = Main.worldedit.getSelection(p);
                                                     if(field.equalsIgnoreCase("arena.main")){
                                                         Region r = new Region(sel.getMinimumPoint(),sel.getMaximumPoint(),"main");
@@ -103,8 +107,26 @@ public class EventsCommand implements CommandExecutor {
                                                         setupMode.put(p,e);
                                                         EventManager.setEvent(e);
                                                     }
-                                                }else{
-
+                                                }else if(field.contains("config.")){
+                                                    if(args.length==4){
+                                                        String fieldname = field.split("\\.")[1];
+                                                        try {
+                                                            Field f1 = e.getClass().getField(fieldname);
+                                                            if(f1.getType().equals(int.class)) {
+                                                                f1.set(e, Integer.parseInt(args[3]));
+                                                            }else{
+                                                                f1.set(e,args[3]);
+                                                            }
+                                                            e.setFields.add(field);
+                                                            EventManager.setEvent(e);
+                                                        } catch (NoSuchFieldException ex) {
+                                                            sender.sendMessage("Invalid configfield");
+                                                        } catch (IllegalAccessException ex) {
+                                                            sender.sendMessage("Not allowed!");
+                                                        }
+                                                    }else{
+                                                        sender.sendMessage("You need to specify a value!");
+                                                    }
                                                 }
                                             }else{
                                                 sender.sendMessage("The Event of this type does not require this field!");
