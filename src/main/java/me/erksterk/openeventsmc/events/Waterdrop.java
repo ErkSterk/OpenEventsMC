@@ -190,7 +190,6 @@ public class Waterdrop extends Event {
                         Region r = getArena().getRegionByname("wait");
                         List<Player> l = getAllPlayersInRegionXZ(r);
                         for (Player p : l) {
-                            System.out.println(p.getName());
                             p.teleport(getArena().getRegionByname("player").getRandomLoc());
                         }
                         dropped = true; //telling the loop to check for people who didnt finish next round

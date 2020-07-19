@@ -27,12 +27,9 @@ public class EventManager {
                 case "WATERDROP": {
                     e = new Waterdrop(eventname);
                     e.setType(EventType.WATERDROP);
-                    System.out.println(29);
                     break;
                 }
             }
-            System.out.println(eventname);
-
             for (String arena : conf.getEvent().getConfigurationSection(eventname + ".arena").getKeys(false)) {
                 String loc1 = conf.getEvent().getString(eventname + ".arena." + arena + ".loc1");
                 String[] l1 = loc1.split("_");
@@ -43,16 +40,13 @@ public class EventManager {
                 Location m2 = new Location(Bukkit.getWorld(l2[0]), Integer.parseInt(l2[1]), Integer.parseInt(l2[2]), Integer.parseInt(l2[3]));
                 Region main = new Region(m1, m2, arena);
 
-                System.out.println(arena);
                 Arena a;
                 if (arena.equalsIgnoreCase("main")) {
-                    System.out.println(48);
                     a = new Arena(main);
                 } else {
                     a = e.getArena();
                 }
                 a.addRegion(main);
-                if(a==null) System.out.println(53);
                 e.setArena(a);
                 e.setFields.add("arena." + arena);
             }

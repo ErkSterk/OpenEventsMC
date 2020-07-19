@@ -90,7 +90,6 @@ public class EventsCommand implements CommandExecutor {
                                                         Arena a = new Arena(r);
                                                         e.setArena(a);
                                                         e.setFields.add("arena.main");
-                                                        System.out.println(e.getArena().getArenaBoundRegion().getName());
                                                         setupMode.put(p,e);
                                                         EventManager.setEvent(e);
                                                     }else{
