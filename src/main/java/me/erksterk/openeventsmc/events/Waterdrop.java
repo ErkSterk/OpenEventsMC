@@ -3,8 +3,10 @@ package me.erksterk.openeventsmc.events;
 
 import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.Config;
+import me.erksterk.openeventsmc.config.Language;
 import me.erksterk.openeventsmc.misc.EventStatus;
 import me.erksterk.openeventsmc.misc.Region;
+import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,13 +14,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Waterdrop extends Event {
     //TODO: Currently we have multiple variables to check and do the same stuff, this should be reduced to a single on to prevent confusion.
-    private BukkitTask task = null;
+    private BukkitTask taskGame = null;
+    private BukkitTask taskMove = null;
     private boolean dropped = false;
     private int schedulerSeconds = 0;
     public List<Player> eliminated = new ArrayList<>();
@@ -52,15 +56,12 @@ public class Waterdrop extends Event {
                         Location tmpblock = new Location(re.getMin().getWorld(), x, y, z);
                         tmpblock.getBlock().setType(Material.WATER);
                         waterblocks++;
-                        if (round > 2) {
                             int rand = ThreadLocalRandom.current().nextInt(0, 100);
                             if (rand < percentCover) {
                                 tmpblock.getBlock().setType(Material.REDSTONE_BLOCK);
                                 waterblocks--;
                             }
-                        } else {
-                            return;
-                        }
+
 
                     }
                 }
@@ -80,7 +81,7 @@ public class Waterdrop extends Event {
 
     }
 
-    private void cleanupWater(){
+    private void cleanupWater() {
         Region re = getArena().getRegionByname("inwater");
 
         if (re != null) {
@@ -96,92 +97,152 @@ public class Waterdrop extends Event {
     }
 
     //Checks for winners and if there is one ends the event
-    private void checkForWinner(){
+    private void checkForWinner() {
         List<Player> alive = new ArrayList<>();
-        for(Player p : getAllPlayers()){
-            if(!eliminated.contains(p)) alive.add(p);
+        for (Player p : getPlayers()) {
+            if (!eliminated.contains(p)) alive.add(p);
         }
-        if(alive.size()==0){
-            Bukkit.broadcastMessage("Nobody survived the event.");
-            running=false;
-            cleanupWater();
+        if (alive.size() == 0) {
+            String message = Language.Waterdrop_nowinner;
+            message = MessageUtils.translateMessage(message,new HashMap<>());
+            announceMessage(message);
+            running = false;
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
+                cleanupWater();
+            }, 0);
             setStatus(EventStatus.STOPPED);
-            task.cancel();
-        }else if(alive.size()==1){
-            Bukkit.broadcastMessage(alive.get(0).getName()+" has won the event!");
-            cleanupWater();
-            running=false;
+            eliminated.clear();
+            clearPlayers();
+            taskGame.cancel();
+            taskMove.cancel();
+        } else if (alive.size() == 1) {
+            String message = Language.Waterdrop_winner;
+            HashMap<String,String> args = new HashMap<>();
+            args.put("%player%",alive.get(0).getName());
+            message = MessageUtils.translateMessage(message,args);
+            announceMessage(message);
+            running = false;
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
+                cleanupWater();
+            }, 0);
             setStatus(EventStatus.STOPPED);
-            task.cancel();
+            eliminated.clear();
+            clearPlayers();
+            taskGame.cancel();
+            taskMove.cancel();
+        }
+    }
+
+    public void announceMessage(String message) {
+        if(Config.waterdrop_announce_to_all_online) {
+            Bukkit.broadcastMessage(message);
+        }
+        if(Config.waterdrop_announce_to_all_partaking){
+            sendMessageToPartaking(message);
         }
     }
 
 
     public void start() {
-        task = Bukkit.getScheduler().runTaskTimer(Main.plugin, () -> {
-            try {
-                Thread.sleep(1000);
-                if (running) {
-                    setStatus(EventStatus.RUNNING);
-                    schedulerSeconds++;
-                    if (dropped) { //A drop has started, search for players that didnt complete
-                        if (schedulerSeconds > Config.waterdrop_elimination_after_drop) {
-                            //The players left that didnt finish should be eliminated at this point!
-                            List<Player> l = getAllPlayersInRegionXZ(getArena().getRegionByname("wait"));
-                            for (Player p : getAllPlayers()) {
-                                if (!eliminated.contains(p)) {
-                                    if (!l.contains(p)) {
-                                        //The player is not dead but didnt complete either, eliminate him
-                                        eliminated.add(p);
-                                        p.teleport(getArena().getRegionByname("dead").getRandomLoc());
-                                        Bukkit.broadcastMessage("Eliminated "+p.getName());
-                                    }
+        taskGame = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.plugin, () -> {
+            if (running) {
+                setStatus(EventStatus.RUNNING);
+                schedulerSeconds++;
+                if (dropped) { //A drop has started, search for players that didnt complete
+                    if (schedulerSeconds > Config.waterdrop_elimination_after_drop) {
+                        //The players left that didnt finish should be eliminated at this point!
+                        List<Player> l = getAllPlayersInRegionXZ(getArena().getRegionByname("wait"));
+                        for (Player p : getPlayers()) {
+                            if (!eliminated.contains(p)) {
+                                if (!l.contains(p)) {
+                                    //The player is not dead but didnt complete either, eliminate him
+                                    eliminated.add(p);
+                                    p.teleport(getArena().getRegionByname("dead").getRandomLoc());
+                                    String message = Language.Waterdrop_eliminated;
+                                    HashMap<String,String> args = new HashMap<>();
+                                    args.put("%player%",p.getName());
+                                    message = MessageUtils.translateMessage(message,args);
+                                    announceMessage(message);
+
                                 }
                             }
-                            dropped = false; // telling loop to drop players
-                            schedulerSeconds = 0; //resetting the timer
-                        } else {
-                            Bukkit.broadcastMessage("Eliminating in "+(Config.waterdrop_elimination_after_drop-schedulerSeconds)+" Seconds");
-
                         }
+                        dropped = false; // telling loop to drop players
+                        schedulerSeconds = 0; //resetting the timer
                     } else {
-                        if (schedulerSeconds > Config.waterdrop_warn_before_drop_amount) {
-                            //We should drop all alive players
-                            randomize(); //randomize the dropcover
-                            Bukkit.broadcastMessage("Dropping!");
-                            Region r = getArena().getRegionByname("wait");
-                            List<Player> l = getAllPlayersInRegionXZ(r);
-                            System.out.println(l.size());
-                            for (Player p : l) {
-                                System.out.println(p.getName());
-                                p.teleport(getArena().getRegionByname("player").getRandomLoc());
-                            }
-                            dropped = true; //telling the loop to check for people who didnt finish next round
-                            schedulerSeconds = 0; //resetting the timer
-                            round++;
-                        } else {
-                            Bukkit.broadcastMessage("Dropping in "+(Config.waterdrop_warn_before_drop_amount-schedulerSeconds)+" Seconds");
-                        }
+                        HashMap<String,String> args = new HashMap<>();
+                        args.put("%time%",(String.valueOf(Config.waterdrop_elimination_after_drop - schedulerSeconds)));
+                        String message = MessageUtils.translateMessage(Language.Waterdrop_eliminate_countdown,args);
+                        announceMessage(message);
+
                     }
+                } else {
+                    if (schedulerSeconds > Config.waterdrop_warn_before_drop_amount) {
+                        //We should drop all alive players
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
+                            randomize(); //randomize the dropcover
+                        }, 0);
 
-                    checkForWinner(); //Check if someone has won and end the event.
-
-
+                        String message = MessageUtils.translateMessage(Language.Waterdrop_dropping,new HashMap<>());
+                        announceMessage(message);
+                        Region r = getArena().getRegionByname("wait");
+                        List<Player> l = getAllPlayersInRegionXZ(r);
+                        for (Player p : l) {
+                            System.out.println(p.getName());
+                            p.teleport(getArena().getRegionByname("player").getRandomLoc());
+                        }
+                        dropped = true; //telling the loop to check for people who didnt finish next round
+                        schedulerSeconds = 0; //resetting the timer
+                        round++;
+                    } else {
+                        HashMap<String,String> args = new HashMap<>();
+                        args.put("%time%",(String.valueOf((Config.waterdrop_warn_before_drop_amount - schedulerSeconds))));
+                        String message = MessageUtils.translateMessage(Language.Waterdrop_drop_countdown,args);
+                        announceMessage(message);
+                    }
                 }
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                checkForWinner(); //Check if someone has won and end the event.
+
+
             }
-        }, 20L, 20L);
+
+        }, 0, 20);
+        taskMove = Bukkit.getScheduler().runTaskTimer(Main.plugin, () -> {
+            if (running) {
+                //Player is partaking in an event
+                for (Player p : getAllAlivePlayers()) {
+                    if (p.getLocation().getBlock().getType() == Material.WATER || p.getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
+                        if (getArena().getRegionByname("inwater").isInBoundsXZ(p.getLocation())) {
+                            p.teleport(getArena().getRegionByname("wait").getRandomLoc());
+                            p.sendMessage(MessageUtils.translateMessage(Language.Waterdrop_dropped_success,new HashMap<>()));
+                        }
+                    }
+                }
+            }
+
+        }, 0, 1);
+    }
+
+    private List<Player> getAllAlivePlayers() {
+        List<Player> alive = new ArrayList<>();
+        for (Player p : getPlayers()) {
+            if (!eliminated.contains(p)) {
+                alive.add(p);
+            }
+        }
+        return alive;
     }
 
 
     @Override
     public void joinPlayer(Player p) {
-       if(!getPlayers().contains(p)) {
-           getPlayers().add(p);
-           p.teleport(getArena().getRegionByname("wait").getRandomLoc());
-       }
+        if (!getPlayers().contains(p)) {
+            getPlayers().add(p);
+            p.teleport(getArena().getRegionByname("wait").getRandomLoc());
+        }
     }
 
 

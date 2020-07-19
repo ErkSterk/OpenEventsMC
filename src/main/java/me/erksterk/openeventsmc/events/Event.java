@@ -55,8 +55,8 @@ public class Event {
         players.remove(p);
     }
 
-    public List<Player> getAllPlayers() {
-        return players;
+    public void clearPlayers(){
+        players.clear();
     }
 
     public Arena getArena() {
@@ -96,6 +96,12 @@ public class Event {
     }
 
     public void start() {
+    }
+
+    public void sendMessageToPartaking(String message){
+        for(Player p : players){
+            p.sendMessage(message);
+        }
     }
 
     public List<Player> getAllPlayersInRegion(Region r) {

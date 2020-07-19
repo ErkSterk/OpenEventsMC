@@ -2,9 +2,11 @@ package me.erksterk.openeventsmc.commands;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import me.erksterk.openeventsmc.Main;
+import me.erksterk.openeventsmc.config.Language;
 import me.erksterk.openeventsmc.events.*;
 import me.erksterk.openeventsmc.events.Waterdrop;
 import me.erksterk.openeventsmc.misc.*;
+import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -138,8 +140,13 @@ public class EventsCommand implements CommandExecutor {
                             Event e = EventManager.getEventFromName(args[1]);
                             if(e!=null) {
                                 if(e.getStatus()== EventStatus.STOPPED) {
-                                    Bukkit.broadcastMessage(p.getName() + " is hosting a "+e.getType().toString()+" with the name "+e.getName());
-                                    Bukkit.broadcastMessage("Join by doing /events join "+e.getName());
+                                    HashMap<String,String> ar = new HashMap<>();
+                                    ar.put("%type%",e.getType().toString());
+                                    ar.put("%name%",e.getName());
+                                    ar.put("%player%",p.getName());
+                                    for(String s : Language.Event_host_announce){
+                                        Bukkit.broadcastMessage(MessageUtils.translateMessage(s,ar));
+                                    }
                                     e.setStatus(EventStatus.STARTED);
                                     e.setHoster(p);
                                     e.start();
@@ -179,7 +186,9 @@ public class EventsCommand implements CommandExecutor {
                                 if(e.getStatus()==EventStatus.STARTED){
                                     Player p = (Player) sender;
                                     e.joinPlayer(p);
-                                    p.sendMessage("Joined event");
+                                    HashMap<String,String> ar = new HashMap<>();
+                                    ar.put("%player%",p.getName());
+                                    p.sendMessage(MessageUtils.translateMessage(Language.Event_join,ar));
                                 }else{
                                     sender.sendMessage("This event is currently not running!");
                                 }
