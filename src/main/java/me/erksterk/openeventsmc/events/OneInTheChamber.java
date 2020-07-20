@@ -5,7 +5,9 @@ import me.erksterk.openeventsmc.config.Config;
 import me.erksterk.openeventsmc.misc.EventStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -168,6 +170,15 @@ public class OneInTheChamber extends Event {
         }
     }
 
+    public void joinPlayer(Player p) {
+        getPlayers().add(p);
+        p.teleport(getArena().getRegionByname("player").getRandomLoc());
+
+        //TODO: Make this configurable per game!
+        p.getInventory().addItem(new ItemStack(Material.WOOD_SWORD,1));
+        p.getInventory().addItem(new ItemStack(Material.BOW,1));
+        p.getInventory().addItem(new ItemStack(Material.ARROW,1));
+    }
 
     public void start() {
         taskGame = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.plugin, () -> {

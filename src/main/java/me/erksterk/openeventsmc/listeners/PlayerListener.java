@@ -10,16 +10,19 @@ import me.erksterk.openeventsmc.misc.EventType;
 import me.erksterk.openeventsmc.events.Waterdrop;
 import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -34,7 +37,7 @@ public class PlayerListener extends EventListener {
 
 
     //TODO: implement the listeners into the event instead of having one shared class
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
         Event ev = EventManager.getEventPlayerPartaking(p);
@@ -51,7 +54,22 @@ public class PlayerListener extends EventListener {
                     break;
                 }
                 case ONEINTHECHAMBER: {
-                    //handle death
+                    OneInTheChamber c = (OneInTheChamber) ev;
+                    Player killer = e.getEntity().getKiller();
+                    if(killer!=null) {
+                        int kills = 0;
+                        if (c.kills.containsKey(killer)) {
+                            kills = c.kills.get(killer);
+                        }
+                        kills++;
+                        c.kills.put(killer, kills);
+                        if (!killer.getInventory().contains(Material.ARROW)) {
+                            killer.getInventory().addItem(new ItemStack(Material.ARROW, 1));
+                            killer.sendMessage("+1 Arrow!");
+                        }
+                        Bukkit.broadcastMessage(p.getName() + "was killed by " + killer.getName());
+                    }
+                    e.getDrops().clear();
                     break;
                 }
 
@@ -59,7 +77,24 @@ public class PlayerListener extends EventListener {
         }
     }
 
-    @EventHandler
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onArrowPickup(PlayerPickupItemEvent e) {
+        Player p = e.getPlayer();
+        Event ev = EventManager.getEventPlayerPartaking(p);
+        if (ev != null) {
+            switch (ev.getType()){
+                case ONEINTHECHAMBER:{
+                    if(e.getItem().getItemStack().getType()==Material.ARROW){
+                        e.setCancelled(true);
+                    }
+                }
+            }
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGH)
     public void onRespawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
         Event ev = EventManager.getEventPlayerPartaking(p);
@@ -78,6 +113,9 @@ public class PlayerListener extends EventListener {
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
                         p.getInventory().addItem(new ItemStack(Material.ARROW, 1));
                     }, 20 * 5);
+                    Location l = ev.getArena().getRegionByname("player").getRandomLoc();
+                    e.setRespawnLocation(l);
+                    p.teleport(l);
                     break;
                 }
             }
@@ -89,10 +127,10 @@ public class PlayerListener extends EventListener {
         if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             Entity damager = e.getDamager();
             Entity damaged = e.getEntity();
-            if(damager.getType()==EntityType.ARROW){
+            if (damager.getType() == EntityType.ARROW) {
                 Arrow a = (Arrow) damager;
                 ProjectileSource source = a.getShooter();
-                if (damaged.getType()==EntityType.PLAYER) {
+                if (damaged.getType() == EntityType.PLAYER) {
                     Player d = (Player) source;
                     Player k = (Player) damaged;
                     Event ev = EventManager.getEventPlayerPartaking(k);
@@ -101,13 +139,16 @@ public class PlayerListener extends EventListener {
                             case ONEINTHECHAMBER: {
                                 OneInTheChamber c = (OneInTheChamber) ev;
                                 k.setHealth(0);
-                                Bukkit.broadcastMessage(k.getName()+"was killed by "+d.getName());
                                 int kills = 0;
-                                if(c.kills.containsKey(d)){
+                                if (c.kills.containsKey(d)) {
                                     kills = c.kills.get(d);
                                 }
                                 kills++;
-                                c.kills.put(d,kills);
+                                c.kills.put(d, kills);
+                                if(!d.getInventory().contains(Material.ARROW)){
+                                    d.getInventory().addItem(new ItemStack(Material.ARROW,1));
+                                    d.sendMessage("+1 Arrow!");
+                                }
                                 break;
                             }
                         }
