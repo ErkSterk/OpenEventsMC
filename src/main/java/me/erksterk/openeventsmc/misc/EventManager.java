@@ -8,6 +8,7 @@ import me.erksterk.openeventsmc.events.Waterdrop;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -77,6 +78,21 @@ public class EventManager {
                     e.setFields.add("config." + c);
                 }
             }
+            if(conf.getEvent().isConfigurationSection(eventname+".inventory")){
+                for (String c : conf.getEvent().getConfigurationSection(eventname + ".inventory").getKeys(false)) {
+                    List<ItemStack> items = new ArrayList<>();
+                    for(String s : conf.getEvent().getConfigurationSection(eventname + ".inventory."+c).getKeys(false)){
+                        ItemStack it = conf.getEvent().getItemStack(eventname + ".inventory."+c+"."+s);
+                        items.add(it);
+                    }
+                    if(c.contains("start_gear")){
+                        e.start_gear=items;
+                    }else if(c.contains("respawn_gear")){
+                        e.respawn_gear=items;
+                    }
+                    e.setFields.add("inventory." + c);
+                }
+            }
 
             Main.writeToConsole("&aLoaded Event with name: " + e.getName());
             events.add(e);
@@ -115,6 +131,22 @@ public class EventManager {
 
                     }
                     conf.getEvent().set(e.getName()+"."+c,v);
+                }else if(c.contains("inventory.")){
+                    if(c.equalsIgnoreCase("inventory.start_gear")) {
+                        List<ItemStack> li = e.getEventStartGear();
+                        int i=0;
+                        for(ItemStack it : li) {
+                            conf.getEvent().set(e.getName() + "." + c+"."+i, it);
+                            i++;
+                        }
+                    }else if(c.equalsIgnoreCase("inventory.respawn_gear")) {
+                        List<ItemStack> li = e.respawn_gear;
+                        int i=0;
+                        for(ItemStack it : li) {
+                            conf.getEvent().set(e.getName() + "." + c+"."+i, it);
+                            i++;
+                        }
+                    }
                 }
             }
             conf.saveEvent();

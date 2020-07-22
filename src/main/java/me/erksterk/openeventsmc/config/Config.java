@@ -12,4 +12,6 @@ public class Config {
     public static int waterdrop_warn_before_drop_amount = 10;
     public static int waterdrop_elimination_after_drop = 10;
     public static List<String> oitc_scoreboard = Arrays.asList("%player1% : %p1stat%","%player2% : %p2stat%","%player3% : %p3stat%","%player4% : %p4stat%","%player5% : %p5stat%", "Stats : %pstats%");
+    public static boolean oitc_announce_to_all_partaking = true;
+    public static boolean oitc_announce_to_all_online = false;
 }

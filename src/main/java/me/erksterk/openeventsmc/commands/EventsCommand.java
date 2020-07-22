@@ -127,6 +127,16 @@ public class EventsCommand implements CommandExecutor {
                                                     }else{
                                                         sender.sendMessage("You need to specify a value!");
                                                     }
+                                                }else if(field.contains("inventory.")){
+                                                    String fieldname = field.split("\\.")[1];
+                                                    if(fieldname.equalsIgnoreCase("start_gear")){
+                                                        e.setEventStartGear(p.getInventory()); //Sets the events starter gear to the players inventory!
+                                                        e.setFields.add(field);
+                                                    }else if(fieldname.equalsIgnoreCase("respawn_gear")){
+                                                        e.setEventRespawnGear(p.getInventory()); //Sets the events starter gear to the players inventory!
+                                                        e.setFields.add(field);
+                                                    }
+                                                    EventManager.setEvent(e);
                                                 }
                                             }else{
                                                 sender.sendMessage("The Event of this type does not require this field!");

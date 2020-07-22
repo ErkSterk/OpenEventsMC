@@ -5,8 +5,12 @@ import me.erksterk.openeventsmc.misc.EventStatus;
 import me.erksterk.openeventsmc.misc.EventType;
 import me.erksterk.openeventsmc.misc.Region;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Event {
@@ -18,6 +22,8 @@ public class Event {
     private EventStatus status;
     private String name;
     private EventType type;
+    public List<ItemStack> start_gear = new ArrayList<>();
+    public List<ItemStack> respawn_gear = new ArrayList<>();
 
 
     public List<String> requiredFields = new ArrayList<>();
@@ -79,6 +85,15 @@ public class Event {
     public void setArena(Arena a) {
         this.arena = a;
     }
+    public List<ItemStack> getEventStartGear(){
+        return start_gear;
+    }
+    public void setEventStartGear(Inventory inv){
+        start_gear.clear();
+        for(ItemStack it : inv.getContents()) {
+            if(it!=null) start_gear.add(it);
+        }
+    }
 
     public EventType getType() {
         return type;
@@ -120,5 +135,10 @@ public class Event {
     }
 
 
-
+    public void setEventRespawnGear(Inventory inv) {
+        respawn_gear.clear();
+        for(ItemStack it : inv.getContents()) {
+            if(it!=null) respawn_gear.add(it);
+        }
+    }
 }

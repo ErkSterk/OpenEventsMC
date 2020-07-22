@@ -56,20 +56,27 @@ public class PlayerListener extends EventListener {
                 case ONEINTHECHAMBER: {
                     OneInTheChamber c = (OneInTheChamber) ev;
                     Player killer = e.getEntity().getKiller();
-                    if(killer!=null) {
-                        int kills = 0;
-                        if (c.kills.containsKey(killer)) {
-                            kills = c.kills.get(killer);
+                    if(ev.running) {
+                        if (killer != null) {
+                            if(killer.getItemInHand().getType()!=Material.BOW) {
+                                int kills = 0;
+                                if (c.kills.containsKey(killer)) {
+                                    kills = c.kills.get(killer);
+                                }
+                                kills++;
+                                c.kills.put(killer, kills);
+                                if (!killer.getInventory().contains(Material.ARROW)) {
+                                    killer.getInventory().addItem(new ItemStack(Material.ARROW, 1));
+                                    killer.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow,new HashMap<>()));
+                                }
+                                HashMap<String,String> hm = new HashMap<>();
+                                hm.put("%killed%",p.getName());
+                                hm.put("%killer%",killer.getName());
+                                ev.sendMessageToPartaking(MessageUtils.translateMessage(Language.Oitc_Kill_Player,hm));
+                            }
                         }
-                        kills++;
-                        c.kills.put(killer, kills);
-                        if (!killer.getInventory().contains(Material.ARROW)) {
-                            killer.getInventory().addItem(new ItemStack(Material.ARROW, 1));
-                            killer.sendMessage("+1 Arrow!");
-                        }
-                        Bukkit.broadcastMessage(p.getName() + "was killed by " + killer.getName());
+                        e.getDrops().clear();
                     }
-                    e.getDrops().clear();
                     break;
                 }
 
@@ -109,7 +116,9 @@ public class PlayerListener extends EventListener {
                     break;
                 }
                 case ONEINTHECHAMBER: {
-                    p.getInventory().addItem(new ItemStack(Material.BOW, 1));
+                    for(ItemStack it : ev.respawn_gear){
+                        p.getInventory().addItem(it);
+                    }
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
                         p.getInventory().addItem(new ItemStack(Material.ARROW, 1));
                     }, 20 * 5);
@@ -147,8 +156,12 @@ public class PlayerListener extends EventListener {
                                 c.kills.put(d, kills);
                                 if(!d.getInventory().contains(Material.ARROW)){
                                     d.getInventory().addItem(new ItemStack(Material.ARROW,1));
-                                    d.sendMessage("+1 Arrow!");
+                                    d.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow,new HashMap<>()));
                                 }
+                                HashMap<String,String> hm = new HashMap<>();
+                                hm.put("%killed%",k.getName());
+                                hm.put("%killer%",d.getName());
+                                ev.sendMessageToPartaking(MessageUtils.translateMessage(Language.Oitc_Kill_Player,hm));
                                 break;
                             }
                         }
