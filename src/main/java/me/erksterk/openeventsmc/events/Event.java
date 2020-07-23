@@ -9,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -140,5 +141,18 @@ public class Event {
         for(ItemStack it : inv.getContents()) {
             if(it!=null) respawn_gear.add(it);
         }
+    }
+
+    public static int getFieldInt(Event e,String s) {
+        String[] field = s.split("\\.");
+        try {
+            Field f1 = e.getClass().getField(field[1]);
+            return (int) f1.get(e);
+        } catch (NoSuchFieldException ex) {
+            ex.printStackTrace();
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 }

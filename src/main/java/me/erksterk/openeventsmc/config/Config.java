@@ -11,7 +11,9 @@ public class Config {
     public static boolean waterdrop_announce_to_all_online = false;
     public static int waterdrop_warn_before_drop_amount = 10;
     public static int waterdrop_elimination_after_drop = 10;
-    public static List<String> oitc_scoreboard = Arrays.asList("%player1% : %p1stat%","%player2% : %p2stat%","%player3% : %p3stat%","%player4% : %p4stat%","%player5% : %p5stat%", "Stats : %pstats%");
+    public static List<String> oitc_scoreboard = Arrays.asList("&a%player1% &7: &c%p1stat%","&a%player2% &7: &c%p2stat%","&a%player3% &7: &c%p3stat%","&a%player4% &7: &c%p4stat%","&a%player5% &7: &c%p5stat%", "&7Stats : &c%pstats%");
     public static boolean oitc_announce_to_all_partaking = true;
     public static boolean oitc_announce_to_all_online = false;
+    public static boolean oitc_scoreboard_enabled = true;
+    public static String oitc_scoreboard_title = "&cOne In the chamber";
 }

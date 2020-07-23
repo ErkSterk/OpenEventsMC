@@ -121,7 +121,8 @@ public class PlayerListener extends EventListener {
                     }
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
                         p.getInventory().addItem(new ItemStack(Material.ARROW, 1));
-                    }, 20 * 5);
+                        p.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow,new HashMap<>()));
+                    }, 20 * Event.getFieldInt(ev,"config.respawn_item_give_delay"));
                     Location l = ev.getArena().getRegionByname("player").getRandomLoc();
                     e.setRespawnLocation(l);
                     p.teleport(l);

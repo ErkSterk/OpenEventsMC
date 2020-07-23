@@ -23,41 +23,42 @@ public class Main extends JavaPlugin {
     public static String version;
     public static Plugin plugin;
     private static ConsoleCommandSender console;
-    public static boolean PAPI=false;
+    public static boolean PAPI = false;
 
     ConfigManager configManager = ConfigManager.getInstance();
 
-    public static void writeToConsole(String message){
-        console.sendMessage(ChatColor.translateAlternateColorCodes('&',message));
+    public static void writeToConsole(String message) {
+        console.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
 
     public static WorldEditPlugin worldedit = null;
+
     @Override
-    public void onEnable(){
-        plugin=this;
-        console= Bukkit.getConsoleSender();
+    public void onEnable() {
+        plugin = this;
+        console = Bukkit.getConsoleSender();
         writeToConsole("&cStarting loading of OpenEventsMC");
-        worldedit=(WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("worldedit");
-        version=getDescription().getVersion();
+        worldedit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("worldedit");
+        version = getDescription().getVersion();
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdirs();
+        }
         configManager.setup(this);
         //Initialize config files
-        StorageHandler.loadConfig(getDataFolder().toString(),"config",new Config());
-        StorageHandler.loadConfig(getDataFolder().toString(),"language",new Language());
+        StorageHandler.loadConfig(getDataFolder().toString(), "config", new Config());
+        StorageHandler.loadConfig(getDataFolder().toString(), "language", new Language());
         writeToConsole("&aConfigs Loaded!");
-        if(checkForMissingDependency("WorldEdit")){
+
+        if (checkForMissingDependency("WorldEdit")) {
             writeToConsole("&cERROR, Missing WorldEdit. WorldEdit is required for OpenEventsMC to function properly");
             getPluginLoader().disablePlugin(this);
         }
-        if(checkForMissingDependency("WorldGuard")){
-            writeToConsole("&cERROR, Missing WorldGuard. WorldGuard is required for OpenEventsMC to function properly");
-            getPluginLoader().disablePlugin(this);
-        }
-        if(checkForMissingDependency("PlaceholderAPI")){
+        if (checkForMissingDependency("PlaceholderAPI")) {
             writeToConsole("&cPlaceholderAPI not found, disabling PAPI integration");
 
-        }else{
+        } else {
             writeToConsole("&aPlaceholderAPI found, enabling PAPI integration");
-            PAPI=true;
+            PAPI = true;
             //TODO: add PAPI hook
         }
         EventManager.loadEventsFromConfig();
@@ -67,7 +68,7 @@ public class Main extends JavaPlugin {
 
     //Returns true if the the dependency is missing
     private boolean checkForMissingDependency(String dependencyname) {
-        if(Bukkit.getPluginManager().getPlugin(dependencyname)==null){
+        if (Bukkit.getPluginManager().getPlugin(dependencyname) == null) {
             //Could not find the dependency
             return true;
         }

@@ -26,6 +26,7 @@ public class OneInTheChamber extends Event {
 
     public int gamelength = 10;
     public int winscore = 0;
+    public int respawn_item_give_delay = 5;
 
     public HashMap<Player, Integer> kills = new HashMap<>();
 
@@ -37,6 +38,7 @@ public class OneInTheChamber extends Event {
         requiredFields.add("arena.wait");
         requiredFields.add("config.gamelength");
         requiredFields.add("config.winscore");
+        requiredFields.add("config.respawn_item_give_delay");
         requiredFields.add("inventory.start_gear");
         requiredFields.add("inventory.respawn_gear");
     }
@@ -93,19 +95,20 @@ public class OneInTheChamber extends Event {
 
 
             Objective objective = sidebar.registerNewObjective("test", "dummy"); // Just supposed to be, doesn't actually add anything
-            objective.setDisplayName(ChatColor.translateAlternateColorCodes('&', "Event")); // The name that shows up on the top of the sidebar
+            objective.setDisplayName(ChatColor.translateAlternateColorCodes('&', MessageUtils.translateMessage(Config.oitc_scoreboard_title,new HashMap<>()))); // The name that shows up on the top of the sidebar
             objective.setDisplaySlot(DisplaySlot.SIDEBAR); // setting it as sidebar
 
 
             int pos = 0;
             List<String> li = Config.oitc_scoreboard;
-            li.sort(Comparator.reverseOrder());
             for (String s : li) {
                 try {
 
                     String score = s;
                     if (score != null) {
                         //TODO: this code is fucking retarded, find a better way to do this.
+                        //I will make a manager for this for Alpha2 I wont make it in time for Alpha1 I think.
+                        //There is more problems than just the code for this.
                         Player p0 = getLeadingPlayer();
                         Player p1 = getPlayerOnScoreboardPosition(1);
                         Player p2 = getPlayerOnScoreboardPosition(2);
@@ -116,43 +119,37 @@ public class OneInTheChamber extends Event {
                                 score = score.replace("%player1%", p0.getName());
                                 score = score.replace("%p1stat%", kills.get(p0).toString());
                             } else {
-                                score = score.replace("%player1%", "null");
-                                score = score.replace("%p1stat%", "0");
+                                score = "";
                             }
                         }else if(score.contains("%player2%")) {
                             if (p1 != null) {
                                 score = score.replace("%player2%", p1.getName());
                                 score = score.replace("%p2stat%", kills.get(p1).toString());
                             } else {
-                                score = score.replace("%player2%", "null");
-                                score = score.replace("%p2stat%", "0");
+                                score = "";
                             }
                         }else if(score.contains("%player3%")) {
                             if (p2 != null) {
                                 score = score.replace("%player3%", p2.getName());
                                 score = score.replace("%p3stat%", kills.get(p2).toString());
                             } else {
-                                score = score.replace("%player3%", "null");
-                                score = score.replace("%p3stat%", "0");
+                                score = "";
                             }
                         }else if(score.contains("%player4%")) {
                             if (p3 != null) {
                                 score = score.replace("%player4%", p3.getName());
                                 score = score.replace("%p4stat%", kills.get(p3).toString());
                             } else {
-                                score = score.replace("%player4%", "null");
-                                score = score.replace("%p4stat%", "0");
+                                score = "";
                             }
                         }else if(score.contains("%player5%")) {
                             if (p4 != null) {
                                 score = score.replace("%player5%", p4.getName());
                                 score = score.replace("%p5stat%", kills.get(p4).toString());
                             } else {
-                                score = score.replace("%player5%", "null");
-                                score = score.replace("%p5stat%", "0");
+                                score = "";
                             }
                         }
-                       // Bukkit.broadcastMessage(score);
 
 
 
@@ -217,8 +214,9 @@ public class OneInTheChamber extends Event {
                     }
 
                 } else {
-                    Bukkit.getScheduler().runTask(Main.plugin, this::scoreboardUpdate);
-
+                    if(Config.oitc_scoreboard_enabled) {
+                        Bukkit.getScheduler().runTask(Main.plugin, this::scoreboardUpdate);
+                    }
                     if(getLeadingPlayer()!=null) {
                         if(kills.containsKey(getLeadingPlayer())) {
                             if (kills.get(getLeadingPlayer()) >= winscore) {
