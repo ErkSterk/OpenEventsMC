@@ -2,5 +2,6 @@ package me.erksterk.openeventsmc.misc;
 
 public enum EventType {
     WATERDROP,
-    ONEINTHECHAMBER
+    ONEINTHECHAMBER,
+    REDROVER
 }

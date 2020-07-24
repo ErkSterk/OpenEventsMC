@@ -47,6 +47,11 @@ public class EventsCommand implements CommandExecutor {
                                         e.setType(EventType.ONEINTHECHAMBER);
                                         break;
                                     }
+                                    case "redrover":{
+                                        e = new RedRover(eventname);
+                                        e.setType(EventType.REDROVER);
+                                        break;
+                                    }
                                 }
                                 if (e != null) {
                                     if (EventManager.isEventNameAvailable(eventname)) {

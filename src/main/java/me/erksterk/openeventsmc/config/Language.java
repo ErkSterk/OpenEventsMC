@@ -19,4 +19,12 @@ public class Language {
     public static String Oitc_Kill_Player = "%tag% &c%killed% was killed by %killer%";
     public static List<String> Event_host_announce = Arrays.asList("&a%player% is hosting a &b%type% with the name %name%", "&7join by doing &a/events join %name%");
     public static String Event_join= "%tag% &aJoined event!";
+    public static String Redrover_run_red = "%tag% &cRun to Red!";
+    public static String Redrover_run_blue = "%tag% &bRun to Blue!";
+    public static String Redrover_peace = "%tag% &7%time% Seconds of waiting";
+    public static String Redrover_peace_over = "%tag% Peace time is over";
+    public static String Redrover_killed  = "%tag% &c%killed% was eliminated by %killer%";
+    public static String Redrover_nowinner = "%tag% &cAll players are dead, nobody won the event!";
+    public static String Redrover_winner = "%tag% &a%player% won the event!";
+    public static String Redrover_eliminated="%tag% &c%killed% was eliminated!";
 }

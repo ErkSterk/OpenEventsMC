@@ -5,6 +5,7 @@ import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.Language;
 import me.erksterk.openeventsmc.events.Event;
 import me.erksterk.openeventsmc.events.OneInTheChamber;
+import me.erksterk.openeventsmc.events.RedRover;
 import me.erksterk.openeventsmc.misc.EventManager;
 import me.erksterk.openeventsmc.misc.EventType;
 import me.erksterk.openeventsmc.events.Waterdrop;
@@ -79,6 +80,24 @@ public class PlayerListener extends EventListener {
                     }
                     break;
                 }
+                case REDROVER:{
+                    RedRover c = (RedRover) ev;
+                    if(ev.running){
+                        Player killer = e.getEntity().getKiller();
+                        Player killed = e.getEntity();
+                        c.eliminated.add(killed);
+                        HashMap<String,String> hm = new HashMap<>();
+                        if(killer!=null){
+                            hm.put("%killer%",killer.getName());
+                            hm.put("%killed%",killed.getName());
+                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_killed,hm));
+                        }else{
+                            hm.put("%killed%",killed.getName());
+                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated,hm));
+                        }
+                    }
+                    break;
+                }
 
             }
         }
@@ -126,6 +145,13 @@ public class PlayerListener extends EventListener {
                     Location l = ev.getArena().getRegionByname("player").getRandomLoc();
                     e.setRespawnLocation(l);
                     p.teleport(l);
+                    break;
+                }
+                case REDROVER:{
+                    RedRover rr = (RedRover) ev;
+                    if(rr.eliminated.contains(p)) {
+                        e.setRespawnLocation(ev.getArena().getRegionByname("dead").getRandomLoc());
+                    }
                     break;
                 }
             }

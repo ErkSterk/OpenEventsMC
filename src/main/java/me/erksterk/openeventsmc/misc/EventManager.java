@@ -4,6 +4,7 @@ import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.ConfigManager;
 import me.erksterk.openeventsmc.events.Event;
 import me.erksterk.openeventsmc.events.OneInTheChamber;
+import me.erksterk.openeventsmc.events.RedRover;
 import me.erksterk.openeventsmc.events.Waterdrop;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -35,6 +36,12 @@ public class EventManager {
                 case "ONEINTHECHAMBER":{
                     e = new OneInTheChamber(eventname);
                     e.setType(EventType.ONEINTHECHAMBER);
+                    break;
+                }
+                case "REDROVER":{
+                    e = new RedRover(eventname);
+                    e.setType(EventType.REDROVER);
+                    break;
                 }
             }
             if(conf.getEvent().isConfigurationSection(eventname+".arena")) {
