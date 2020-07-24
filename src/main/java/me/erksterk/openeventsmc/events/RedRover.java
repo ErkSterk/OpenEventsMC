@@ -105,20 +105,24 @@ public class RedRover extends Event {
                         }
                         if (schedulerSeconds >= traveltime) {
                             red = false;
-                            List<Player> red = new ArrayList<>();
-                            Region r = getArena().getRegionByname("red");
+                            List<Player> blue = new ArrayList<>();
+                            Region r = getArena().getRegionByname("blue");
                             for (Player p : getPlayers()) {
                                 if (getAllPlayersInRegionXZ(r).contains(p)) {
-                                    red.add(p);
+                                    blue.add(p);
                                 }
                             }
-                            for (Player p : red) {
-                                p.teleport(getArena().getRegionByname("dead").getRandomLoc());
-                                eliminated.add(p);
-                                HashMap<String,String> hm = new HashMap<>();
-                                hm.put("%killed%",p.getName());
-                                announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated,hm));
+                            for (Player p : getPlayers()) {
+                                if(!blue.contains(p)){
+                                    p.teleport(getArena().getRegionByname("dead").getRandomLoc());
+                                    eliminated.add(p);
+                                    HashMap<String, String> hm = new HashMap<>();
+                                    hm.put("%killed%", p.getName());
+                                    announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated, hm));
+                                }
                             }
+
+
                             peace = true;
                             HashMap<String, String> hm = new HashMap<>();
                             hm.put("%time%", String.valueOf(peacetime));
@@ -134,19 +138,21 @@ public class RedRover extends Event {
                         }
                         if (schedulerSeconds >= traveltime) {
                             red = true;
-                            List<Player> blue = new ArrayList<>();
-                            Region r = getArena().getRegionByname("blue");
+                            List<Player> red = new ArrayList<>();
+                            Region r = getArena().getRegionByname("red");
                             for (Player p : getPlayers()) {
                                 if (getAllPlayersInRegionXZ(r).contains(p)) {
-                                    blue.add(p);
+                                    red.add(p);
                                 }
                             }
-                            for (Player p : blue) {
-                                p.teleport(getArena().getRegionByname("dead").getRandomLoc());
-                                eliminated.add(p);
-                                HashMap<String,String> hm = new HashMap<>();
-                                hm.put("%killed%",p.getName());
-                                announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated,hm));
+                            for (Player p : getPlayers()) {
+                                if(!red.contains(p)){
+                                    p.teleport(getArena().getRegionByname("dead").getRandomLoc());
+                                    eliminated.add(p);
+                                    HashMap<String,String> hm = new HashMap<>();
+                                    hm.put("%killed%",p.getName());
+                                    announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated,hm));
+                                }
                             }
                             peace = true;
                             HashMap<String, String> hm = new HashMap<>();

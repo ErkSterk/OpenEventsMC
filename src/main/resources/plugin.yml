@@ -1,6 +1,6 @@
 main: me.erksterk.openeventsmc.Main
 name: OpenEventsMC
-version: 0.1
+version: Alpha1
 author: ErkSterk
 softdepend: [WorldEdit, PlaceholderAPI]
 commands:

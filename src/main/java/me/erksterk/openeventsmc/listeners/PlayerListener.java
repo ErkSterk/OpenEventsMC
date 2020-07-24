@@ -9,6 +9,7 @@ import me.erksterk.openeventsmc.events.RedRover;
 import me.erksterk.openeventsmc.misc.EventManager;
 import me.erksterk.openeventsmc.misc.EventType;
 import me.erksterk.openeventsmc.events.Waterdrop;
+import me.erksterk.openeventsmc.misc.Region;
 import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -57,9 +58,9 @@ public class PlayerListener extends EventListener {
                 case ONEINTHECHAMBER: {
                     OneInTheChamber c = (OneInTheChamber) ev;
                     Player killer = e.getEntity().getKiller();
-                    if(ev.running) {
+                    if (ev.running) {
                         if (killer != null) {
-                            if(killer.getItemInHand().getType()!=Material.BOW) {
+                            if (killer.getItemInHand().getType() != Material.BOW) {
                                 int kills = 0;
                                 if (c.kills.containsKey(killer)) {
                                     kills = c.kills.get(killer);
@@ -68,32 +69,32 @@ public class PlayerListener extends EventListener {
                                 c.kills.put(killer, kills);
                                 if (!killer.getInventory().contains(Material.ARROW)) {
                                     killer.getInventory().addItem(new ItemStack(Material.ARROW, 1));
-                                    killer.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow,new HashMap<>()));
+                                    killer.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow, new HashMap<>()));
                                 }
-                                HashMap<String,String> hm = new HashMap<>();
-                                hm.put("%killed%",p.getName());
-                                hm.put("%killer%",killer.getName());
-                                ev.sendMessageToPartaking(MessageUtils.translateMessage(Language.Oitc_Kill_Player,hm));
+                                HashMap<String, String> hm = new HashMap<>();
+                                hm.put("%killed%", p.getName());
+                                hm.put("%killer%", killer.getName());
+                                ev.sendMessageToPartaking(MessageUtils.translateMessage(Language.Oitc_Kill_Player, hm));
                             }
                         }
                         e.getDrops().clear();
                     }
                     break;
                 }
-                case REDROVER:{
+                case REDROVER: {
                     RedRover c = (RedRover) ev;
-                    if(ev.running){
+                    if (ev.running) {
                         Player killer = e.getEntity().getKiller();
                         Player killed = e.getEntity();
                         c.eliminated.add(killed);
-                        HashMap<String,String> hm = new HashMap<>();
-                        if(killer!=null){
-                            hm.put("%killer%",killer.getName());
-                            hm.put("%killed%",killed.getName());
-                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_killed,hm));
-                        }else{
-                            hm.put("%killed%",killed.getName());
-                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated,hm));
+                        HashMap<String, String> hm = new HashMap<>();
+                        if (killer != null) {
+                            hm.put("%killer%", killer.getName());
+                            hm.put("%killed%", killed.getName());
+                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_killed, hm));
+                        } else {
+                            hm.put("%killed%", killed.getName());
+                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated, hm));
                         }
                     }
                     break;
@@ -109,9 +110,9 @@ public class PlayerListener extends EventListener {
         Player p = e.getPlayer();
         Event ev = EventManager.getEventPlayerPartaking(p);
         if (ev != null) {
-            switch (ev.getType()){
-                case ONEINTHECHAMBER:{
-                    if(e.getItem().getItemStack().getType()==Material.ARROW){
+            switch (ev.getType()) {
+                case ONEINTHECHAMBER: {
+                    if (e.getItem().getItemStack().getType() == Material.ARROW) {
                         e.setCancelled(true);
                     }
                 }
@@ -135,21 +136,21 @@ public class PlayerListener extends EventListener {
                     break;
                 }
                 case ONEINTHECHAMBER: {
-                    for(ItemStack it : ev.respawn_gear){
+                    for (ItemStack it : ev.respawn_gear) {
                         p.getInventory().addItem(it);
                     }
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
                         p.getInventory().addItem(new ItemStack(Material.ARROW, 1));
-                        p.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow,new HashMap<>()));
-                    }, 20 * Event.getFieldInt(ev,"config.respawn_item_give_delay"));
+                        p.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow, new HashMap<>()));
+                    }, 20 * Event.getFieldInt(ev, "config.respawn_item_give_delay"));
                     Location l = ev.getArena().getRegionByname("player").getRandomLoc();
                     e.setRespawnLocation(l);
                     p.teleport(l);
                     break;
                 }
-                case REDROVER:{
+                case REDROVER: {
                     RedRover rr = (RedRover) ev;
-                    if(rr.eliminated.contains(p)) {
+                    if (rr.eliminated.contains(p)) {
                         e.setRespawnLocation(ev.getArena().getRegionByname("dead").getRandomLoc());
                     }
                     break;
@@ -157,6 +158,7 @@ public class PlayerListener extends EventListener {
             }
         }
     }
+
 
     @EventHandler
     public void onArrowHit(EntityDamageByEntityEvent e) {
@@ -181,15 +183,45 @@ public class PlayerListener extends EventListener {
                                 }
                                 kills++;
                                 c.kills.put(d, kills);
-                                if(!d.getInventory().contains(Material.ARROW)){
-                                    d.getInventory().addItem(new ItemStack(Material.ARROW,1));
-                                    d.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow,new HashMap<>()));
+                                if (!d.getInventory().contains(Material.ARROW)) {
+                                    d.getInventory().addItem(new ItemStack(Material.ARROW, 1));
+                                    d.sendMessage(MessageUtils.translateMessage(Language.Oitc_Add_Arrow, new HashMap<>()));
                                 }
-                                HashMap<String,String> hm = new HashMap<>();
-                                hm.put("%killed%",k.getName());
-                                hm.put("%killer%",d.getName());
-                                ev.sendMessageToPartaking(MessageUtils.translateMessage(Language.Oitc_Kill_Player,hm));
+                                HashMap<String, String> hm = new HashMap<>();
+                                hm.put("%killed%", k.getName());
+                                hm.put("%killer%", d.getName());
+                                ev.sendMessageToPartaking(MessageUtils.translateMessage(Language.Oitc_Kill_Player, hm));
                                 break;
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            Entity damager = e.getDamager();
+            Entity damaged = e.getEntity();
+            System.out.println(203);
+            if (damager.getType() == EntityType.PLAYER && damaged.getType() == EntityType.PLAYER) {
+                System.out.println(205);
+                Player k = (Player) damager;
+                Player d = (Player) damaged;
+
+                Event ev1 = EventManager.getEventPlayerPartaking(k);
+                Event ev2 = EventManager.getEventPlayerPartaking(d);
+                if(ev1==null) System.out.println("208");
+                if(ev2==null) System.out.println("209");
+                if (ev1 != null && ev2!=null) {
+                    System.out.println(212);
+                    if(ev1.getName().equalsIgnoreCase(ev2.getName())) {
+                        System.out.println(214);
+                        switch (ev2.getType()) {
+                            case REDROVER: {
+                                RedRover c = (RedRover) ev1;
+                                Region r = c.getArena().getRegionByname("pvp");
+                                if(!(c.getAllPlayersInRegionXZ(r).contains(k) && c.getAllPlayersInRegionXZ(r).contains(d))){
+                                    e.setCancelled(true);
+                                }
+
                             }
                         }
                     }
