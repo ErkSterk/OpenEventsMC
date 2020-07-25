@@ -3,12 +3,9 @@ package me.erksterk.openeventsmc.listeners;
 import me.erksterk.openeventsmc.EventListener;
 import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.Language;
-import me.erksterk.openeventsmc.events.Event;
-import me.erksterk.openeventsmc.events.OneInTheChamber;
-import me.erksterk.openeventsmc.events.RedRover;
+import me.erksterk.openeventsmc.events.*;
 import me.erksterk.openeventsmc.misc.EventManager;
 import me.erksterk.openeventsmc.misc.EventType;
-import me.erksterk.openeventsmc.events.Waterdrop;
 import me.erksterk.openeventsmc.misc.Region;
 import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
@@ -96,8 +93,27 @@ public class PlayerListener extends EventListener {
                             hm.put("%killed%", killed.getName());
                             ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated, hm));
                         }
+
                     }
                     break;
+                }
+                case LASTMANSTANDING: {
+                    LastManStanding lms = (LastManStanding) ev;
+                    if (lms.running) {
+                        Player killer = e.getEntity().getKiller();
+                        Player killed = e.getEntity();
+                        lms.eliminated.add(killed);
+                        HashMap<String, String> hm = new HashMap<>();
+                        if (killer != null) {
+                            hm.put("%killer%", killer.getName());
+                            hm.put("%killed%", killed.getName());
+                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.LastManStanding_killed, hm));
+                        } else {
+                            hm.put("%killed%", killed.getName());
+                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.LastManStanding_eliminated, hm));
+                        }
+                        e.getDrops().clear();
+                    }
                 }
 
             }
@@ -155,13 +171,20 @@ public class PlayerListener extends EventListener {
                     }
                     break;
                 }
+                case LASTMANSTANDING: {
+                    LastManStanding lms = (LastManStanding) ev;
+                    if (lms.eliminated.contains(p)) {
+                        e.setRespawnLocation(ev.getArena().getRegionByname("dead").getRandomLoc());
+                    }
+                    break;
+                }
             }
         }
     }
 
 
     @EventHandler
-    public void onArrowHit(EntityDamageByEntityEvent e) {
+    public void EntityDamageByEntity(EntityDamageByEntityEvent e) {
         if (e.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             Entity damager = e.getDamager();
             Entity damaged = e.getEntity();
@@ -200,25 +223,27 @@ public class PlayerListener extends EventListener {
         } else {
             Entity damager = e.getDamager();
             Entity damaged = e.getEntity();
-            System.out.println(203);
             if (damager.getType() == EntityType.PLAYER && damaged.getType() == EntityType.PLAYER) {
-                System.out.println(205);
                 Player k = (Player) damager;
                 Player d = (Player) damaged;
 
                 Event ev1 = EventManager.getEventPlayerPartaking(k);
                 Event ev2 = EventManager.getEventPlayerPartaking(d);
-                if(ev1==null) System.out.println("208");
-                if(ev2==null) System.out.println("209");
-                if (ev1 != null && ev2!=null) {
-                    System.out.println(212);
-                    if(ev1.getName().equalsIgnoreCase(ev2.getName())) {
-                        System.out.println(214);
+                if (ev1 != null && ev2 != null) {
+                    if (ev1.getName().equalsIgnoreCase(ev2.getName())) {
                         switch (ev2.getType()) {
                             case REDROVER: {
                                 RedRover c = (RedRover) ev1;
                                 Region r = c.getArena().getRegionByname("pvp");
-                                if(!(c.getAllPlayersInRegionXZ(r).contains(k) && c.getAllPlayersInRegionXZ(r).contains(d))){
+                                if (!(c.getAllPlayersInRegionXZ(r).contains(k) && c.getAllPlayersInRegionXZ(r).contains(d))) {
+                                    e.setCancelled(true);
+                                }
+
+                            }
+                            case LASTMANSTANDING: {
+                                LastManStanding c = (LastManStanding) ev1;
+                                Region r = c.getArena().getRegionByname("pvp");
+                                if (!(c.getAllPlayersInRegionXZ(r).contains(k) && c.getAllPlayersInRegionXZ(r).contains(d))) {
                                     e.setCancelled(true);
                                 }
 

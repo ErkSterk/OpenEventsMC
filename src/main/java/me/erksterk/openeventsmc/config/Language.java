@@ -28,7 +28,7 @@ public class Language {
     public static String Redrover_winner = "%tag% &a%player% won the event!";
     public static String Redrover_eliminated="%tag% &c%killed% was eliminated!";
     public static String Command_No_Permission = "%tag% &cNo Permission!";
-    public static String Command_not_found = "%tag% %cUnknown command!";
+    public static String Command_not_found = "%tag% &cUnknown command!";
     public static String Command_host_event_already = "%tag% &cThis event is already running!";
     public static String Command_event_not_found = "%tag% &cCould not find event!";
     public static String Command_pause_name_missing = "%tag% &cType the name of the event you wish to toggle!";
@@ -52,4 +52,8 @@ public class Language {
     public static String Command_setup_entered="%tag% &aEntered setup mode!";
     public static String Command_setup_missing_eventname="%tag% &cMissing eventname!";
     public static String Command_setup_set_missing_value="%tag% &cMissing value!";
+    public static String LastManStanding_nowinner="%tag% &cAll participants are dead, nobody won the event!";
+    public static String LastManStanding_winner="%tag% &a%player% has won the event!";
+    public static String LastManStanding_killed="%tag% &c%killed% was killed by %killer%";
+    public static String LastManStanding_eliminated="%tag% %killed% was eliminated!";
 }

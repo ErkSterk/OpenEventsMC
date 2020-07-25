@@ -2,10 +2,7 @@ package me.erksterk.openeventsmc.misc;
 
 import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.ConfigManager;
-import me.erksterk.openeventsmc.events.Event;
-import me.erksterk.openeventsmc.events.OneInTheChamber;
-import me.erksterk.openeventsmc.events.RedRover;
-import me.erksterk.openeventsmc.events.Waterdrop;
+import me.erksterk.openeventsmc.events.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -41,6 +38,11 @@ public class EventManager {
                 case "REDROVER":{
                     e = new RedRover(eventname);
                     e.setType(EventType.REDROVER);
+                    break;
+                }
+                case "LASTMANSTANDING":{
+                    e = new LastManStanding(eventname);
+                    e.setType(EventType.LASTMANSTANDING);
                     break;
                 }
             }

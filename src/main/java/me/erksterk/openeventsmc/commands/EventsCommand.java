@@ -54,6 +54,11 @@ public class EventsCommand implements CommandExecutor {
                                             e.setType(EventType.REDROVER);
                                             break;
                                         }
+                                        case "lastmanstanding": {
+                                            e = new LastManStanding(eventname);
+                                            e.setType(EventType.LASTMANSTANDING);
+                                            break;
+                                        }
                                     }
                                     if (e != null) {
                                         if (EventManager.isEventNameAvailable(eventname)) {
