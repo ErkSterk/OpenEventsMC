@@ -56,4 +56,5 @@ public class Language {
     public static String LastManStanding_winner="%tag% &a%player% has won the event!";
     public static String LastManStanding_killed="%tag% &c%killed% was killed by %killer%";
     public static String LastManStanding_eliminated="%tag% %killed% was eliminated!";
+    public static String Commands_setup_set_missing_selection="%tag% &cYou need to make a worldedit selection!";
 }

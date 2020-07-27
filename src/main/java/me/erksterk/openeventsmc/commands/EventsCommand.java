@@ -106,25 +106,29 @@ public class EventsCommand implements CommandExecutor {
                                                 if (e.requiredFields.contains(field)) {
                                                     if (field.contains("arena.")) {
                                                         Selection sel = Main.worldedit.getSelection(p);
-                                                        if (field.equalsIgnoreCase("arena.main")) {
-                                                            Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), "main");
-                                                            Arena a = new Arena(r);
-                                                            e.setArena(a);
-                                                            e.setFields.add("arena.main");
-                                                            setupMode.put(p, e);
-                                                            EventManager.setEvent(e);
-                                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success,new HashMap<>()));
-                                                        } else {
-                                                            String[] spli = field.split("\\.");
-                                                            String rname = spli[1];
-                                                            Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), rname);
-                                                            Arena a = e.getArena();
-                                                            a.addRegion(r);
-                                                            e.setArena(a);
-                                                            e.setFields.add(field);
-                                                            setupMode.put(p, e);
-                                                            EventManager.setEvent(e);
-                                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success,new HashMap<>()));
+                                                        if(sel!=null) {
+                                                            if (field.equalsIgnoreCase("arena.main")) {
+                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), "main");
+                                                                Arena a = new Arena(r);
+                                                                e.setArena(a);
+                                                                e.setFields.add("arena.main");
+                                                                setupMode.put(p, e);
+                                                                EventManager.setEvent(e);
+                                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success, new HashMap<>()));
+                                                            } else {
+                                                                String[] spli = field.split("\\.");
+                                                                String rname = spli[1];
+                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), rname);
+                                                                Arena a = e.getArena();
+                                                                a.addRegion(r);
+                                                                e.setArena(a);
+                                                                e.setFields.add(field);
+                                                                setupMode.put(p, e);
+                                                                EventManager.setEvent(e);
+                                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success, new HashMap<>()));
+                                                            }
+                                                        }else{
+                                                            sender.sendMessage(MessageUtils.translateMessage(Language.Commands_setup_set_missing_selection,new HashMap<>()));
                                                         }
                                                     } else if (field.contains("config.")) {
                                                         if (args.length == 4) {
