@@ -22,7 +22,6 @@ public class RedRover extends Event {
     public int peacetime = 20;
     private BukkitTask taskGame = null;
     public int schedulerSeconds = 0;
-    public List<Player> eliminated = new ArrayList<>();
 
     public RedRover(String name) {
         super(name);
@@ -80,7 +79,7 @@ public class RedRover extends Event {
     }
 
     boolean peace = false; //is it currently peace?
-    boolean red = true; //current area
+    public boolean red = true; //current area
     boolean announced = false; //has the message been announced?
 
     public void start() {

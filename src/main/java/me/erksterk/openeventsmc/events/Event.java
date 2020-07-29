@@ -7,22 +7,23 @@ import me.erksterk.openeventsmc.misc.Region;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Event {
 
 
-    public boolean running=false;
+    public boolean running = false;
     private List<Player> players = new ArrayList<>();
+    public List<Player> eliminated = new ArrayList<>();
+
     private Arena arena;
     private EventStatus status;
     private String name;
     private EventType type;
+
     public List<ItemStack> start_gear = new ArrayList<>();
     public List<ItemStack> respawn_gear = new ArrayList<>();
 
@@ -30,6 +31,7 @@ public class Event {
     public List<String> requiredFields = new ArrayList<>();
     public List<String> setFields = new ArrayList<>();
     private Player host;
+
 
     public Event(String name) {
         this.status = EventStatus.STOPPED;
@@ -49,7 +51,7 @@ public class Event {
         return false;
     }
 
-    public List<Player> getPlayers(){
+    public List<Player> getPlayers() {
         return players;
     }
 
@@ -62,7 +64,7 @@ public class Event {
         players.remove(p);
     }
 
-    public void clearPlayers(){
+    public void clearPlayers() {
         players.clear();
     }
 
@@ -86,13 +88,15 @@ public class Event {
     public void setArena(Arena a) {
         this.arena = a;
     }
-    public List<ItemStack> getEventStartGear(){
+
+    public List<ItemStack> getEventStartGear() {
         return start_gear;
     }
-    public void setEventStartGear(Inventory inv){
+
+    public void setEventStartGear(Inventory inv) {
         start_gear.clear();
-        for(ItemStack it : inv.getContents()) {
-            if(it!=null) start_gear.add(it);
+        for (ItemStack it : inv.getContents()) {
+            if (it != null) start_gear.add(it);
         }
     }
 
@@ -114,8 +118,8 @@ public class Event {
     public void start() {
     }
 
-    public void sendMessageToPartaking(String message){
-        for(Player p : players){
+    public void sendMessageToPartaking(String message) {
+        for (Player p : players) {
             p.sendMessage(message);
         }
     }
@@ -127,6 +131,7 @@ public class Event {
         }
         return ret;
     }
+
     public List<Player> getAllPlayersInRegionXZ(Region r) {
         List<Player> ret = new ArrayList<>();
         for (Player p : players) {
@@ -138,12 +143,12 @@ public class Event {
 
     public void setEventRespawnGear(Inventory inv) {
         respawn_gear.clear();
-        for(ItemStack it : inv.getContents()) {
-            if(it!=null) respawn_gear.add(it);
+        for (ItemStack it : inv.getContents()) {
+            if (it != null) respawn_gear.add(it);
         }
     }
 
-    public static int getFieldInt(Event e,String s) {
+    public static int getFieldInt(Event e, String s) {
         String[] field = s.split("\\.");
         try {
             Field f1 = e.getClass().getField(field[1]);
@@ -155,4 +160,26 @@ public class Event {
         }
         return 0;
     }
+
+    public boolean isPlayerAlive(Player p) {
+        if (players.contains(p)) {
+            if (eliminated.contains(p)) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    public void revivePlayer(Player p, Region r) {
+        eliminated.remove(p);
+        p.teleport(r.getRandomLoc());
+        if(start_gear.size()!=0){
+            for(ItemStack i : start_gear){
+                p.getInventory().addItem(i);
+            }
+        }
+    }
+
 }

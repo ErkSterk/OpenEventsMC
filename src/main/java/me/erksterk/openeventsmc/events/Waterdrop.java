@@ -25,7 +25,6 @@ public class Waterdrop extends Event {
     private BukkitTask taskMove = null;
     private boolean dropped = false;
     private int schedulerSeconds = 0;
-    public List<Player> eliminated = new ArrayList<>();
     private int round = 0;
 
     public Waterdrop(String name) {

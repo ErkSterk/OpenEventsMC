@@ -29,7 +29,7 @@ public class LastManStanding extends Event {
     private BukkitTask taskGame = null;
     public int schedulerSeconds = 0;
 
-    public List<Player> eliminated = new ArrayList<>();
+
     public void joinPlayer(Player p) {
         getPlayers().add(p);
         p.teleport(getArena().getRegionByname("wait").getRandomLoc());

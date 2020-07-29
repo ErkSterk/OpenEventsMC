@@ -26,13 +26,13 @@ public class EventsCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("events")) {
             if (args.length == 0) {
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',"&aRunning OEMC by &6ErkSterk - &cv."+Main.version));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aRunning OEMC by &6ErkSterk - &cv." + Main.version));
             } else {
                 switch (args[0]) {
                     case "create": {
                         if (sender.hasPermission("oemc.events.create")) {
                             if (args.length == 1) {
-                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_missing_name,new HashMap<>()));
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_missing_name, new HashMap<>()));
                             } else {
                                 if (args.length == 3) {
                                     String eventname = args[1];
@@ -63,15 +63,15 @@ public class EventsCommand implements CommandExecutor {
                                     if (e != null) {
                                         if (EventManager.isEventNameAvailable(eventname)) {
                                             EventManager.createEvent(e);
-                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_created,new HashMap<>()));
+                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_created, new HashMap<>()));
                                         } else {
-                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_already_created,new HashMap<>()));
+                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_already_created, new HashMap<>()));
                                         }
                                     } else {
-                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_invalid_eventtype,new HashMap<>()));
+                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_invalid_eventtype, new HashMap<>()));
                                     }
                                 } else {
-                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_missing_eventtype,new HashMap<>()));
+                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_create_missing_eventtype, new HashMap<>()));
                                 }
                             }
 
@@ -88,25 +88,25 @@ public class EventsCommand implements CommandExecutor {
                                 if (args.length == 1) {
                                     List<String> missing = e.getMissingFields();
                                     if (missing.size() == 0) {
-                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_done,new HashMap<>()));
+                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_done, new HashMap<>()));
                                         setupMode.remove(p);
                                     } else {
-                                        sender.sendMessage(ChatColor.RED+"Missing Fields:");
+                                        sender.sendMessage(ChatColor.RED + "Missing Fields:");
                                         for (String s : missing) {
-                                            sender.sendMessage(ChatColor.RED+s);
+                                            sender.sendMessage(ChatColor.RED + s);
                                         }
                                     }
                                 } else {
                                     switch (args[1]) {
                                         case "set": {
                                             if (args.length == 2) {
-                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_missing_field,new HashMap<>()));
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_missing_field, new HashMap<>()));
                                             } else {
                                                 String field = args[2].toLowerCase();
                                                 if (e.requiredFields.contains(field)) {
                                                     if (field.contains("arena.")) {
                                                         Selection sel = Main.worldedit.getSelection(p);
-                                                        if(sel!=null) {
+                                                        if (sel != null) {
                                                             if (field.equalsIgnoreCase("arena.main")) {
                                                                 Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), "main");
                                                                 Arena a = new Arena(r);
@@ -127,8 +127,8 @@ public class EventsCommand implements CommandExecutor {
                                                                 EventManager.setEvent(e);
                                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success, new HashMap<>()));
                                                             }
-                                                        }else{
-                                                            sender.sendMessage(MessageUtils.translateMessage(Language.Commands_setup_set_missing_selection,new HashMap<>()));
+                                                        } else {
+                                                            sender.sendMessage(MessageUtils.translateMessage(Language.Commands_setup_set_missing_selection, new HashMap<>()));
                                                         }
                                                     } else if (field.contains("config.")) {
                                                         if (args.length == 4) {
@@ -142,14 +142,14 @@ public class EventsCommand implements CommandExecutor {
                                                                 }
                                                                 e.setFields.add(field);
                                                                 EventManager.setEvent(e);
-                                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success,new HashMap<>()));
+                                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success, new HashMap<>()));
                                                             } catch (NoSuchFieldException ex) {
-                                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_invalid,new HashMap<>()));
+                                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_invalid, new HashMap<>()));
                                                             } catch (IllegalAccessException ex) {
-                                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_illegal,new HashMap<>()));
+                                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_illegal, new HashMap<>()));
                                                             }
                                                         } else {
-                                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_missing_value,new HashMap<>()));
+                                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_missing_value, new HashMap<>()));
                                                         }
                                                     } else if (field.contains("inventory.")) {
                                                         String fieldname = field.split("\\.")[1];
@@ -161,10 +161,10 @@ public class EventsCommand implements CommandExecutor {
                                                             e.setFields.add(field);
                                                         }
                                                         EventManager.setEvent(e);
-                                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success,new HashMap<>()));
+                                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success, new HashMap<>()));
                                                     }
                                                 } else {
-                                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_field_not_needed,new HashMap<>()));
+                                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_field_not_needed, new HashMap<>()));
                                                 }
 
                                             }
@@ -178,15 +178,15 @@ public class EventsCommand implements CommandExecutor {
                                 }
                             } else {
                                 if (args.length == 1) {
-                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_missing_eventname,new HashMap<>()));
+                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_missing_eventname, new HashMap<>()));
                                 } else {
                                     String eventname = args[1];
                                     Event e = EventManager.getEventFromName(eventname);
                                     if (e != null) {
-                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_entered,new HashMap<>()));
+                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_entered, new HashMap<>()));
                                         setupMode.put(p, e);
                                     } else {
-                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_missing_eventname,new HashMap<>()));
+                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_missing_eventname, new HashMap<>()));
                                     }
                                 }
                             }
@@ -196,10 +196,10 @@ public class EventsCommand implements CommandExecutor {
                         break;
                     }
                     case "host": {
-                        if(sender.hasPermission("oemc.events.host")) {
+                        if (sender.hasPermission("oemc.events.host")) {
                             Player p = (Player) sender;
                             if (args.length == 1) {
-                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_host_event_event_missing,new HashMap<>()));
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_host_event_event_missing, new HashMap<>()));
                             } else {
                                 Event e = EventManager.getEventFromName(args[1]);
                                 if (e != null) {
@@ -215,20 +215,20 @@ public class EventsCommand implements CommandExecutor {
                                         e.setHoster(p);
                                         e.start();
                                     } else {
-                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_host_event_already,new HashMap<>()));
+                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_host_event_already, new HashMap<>()));
                                     }
-                                }else{
-                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_event_not_found,new HashMap<>()));
+                                } else {
+                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_event_not_found, new HashMap<>()));
                                 }
                             }
 
-                        }else{
+                        } else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
                         }
                         break;
                     }
                     case "pause": {
-                        if(sender.hasPermission("oemc.events.pause")) {
+                        if (sender.hasPermission("oemc.events.pause")) {
                             Player p = (Player) sender;
                             if (args.length == 1) {
                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_pause_name_missing, new HashMap<>()));
@@ -244,13 +244,13 @@ public class EventsCommand implements CommandExecutor {
                                     }
                                 }
                             }
-                        }else{
+                        } else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
                         }
                         break;
                     }
                     case "join": {
-                        if(sender.hasPermission("oemc.events.join")) {
+                        if (sender.hasPermission("oemc.events.join")) {
                             if (args.length == 1) {
                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_missing_event, new HashMap<>()));
                             } else {
@@ -269,13 +269,62 @@ public class EventsCommand implements CommandExecutor {
                                     sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_event_not_exists, new HashMap<>()));
                                 }
                             }
-                        }else{
+                        } else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
                         }
                         break;
                     }
-                    default:{
-                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_not_found,new HashMap<>()));
+                    case "revive": {
+                        if (sender.hasPermission("oemc.events.revive")) {
+                            if (args.length == 1) {
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_missing_player, new HashMap<>()));
+                            } else {
+                                String n = args[1];
+                                Player p = Bukkit.getPlayer(n);
+                                if (p != null) {
+                                    Event e = EventManager.getEventPlayerPartaking(p);
+                                    if (!e.isPlayerAlive(p)) {
+                                        switch (e.getType()) {
+                                            case WATERDROP: {
+                                                e.revivePlayer(p, e.getArena().getRegionByname("wait"));
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
+                                                break;
+                                            }
+                                            case REDROVER: {
+                                                RedRover r = (RedRover) e;
+                                                Region re;
+                                                if (r.red) {
+                                                    re = e.getArena().getRegionByname("red");
+                                                } else {
+                                                    re = e.getArena().getRegionByname("blue");
+                                                }
+                                                e.revivePlayer(p, re);
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
+                                                break;
+                                            }
+                                            case LASTMANSTANDING: {
+                                                e.revivePlayer(p, e.getArena().getRegionByname("pvp"));
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
+                                                break;
+                                            }
+                                            default: {
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_event_norevive, new HashMap<>()));
+                                            }
+                                        }
+                                    }else{
+                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_player_alive,new HashMap<>()));
+                                    }
+                                } else {
+                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_player_noexist, new HashMap<>()));
+                                }
+                            }
+                        } else {
+                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
+                        }
+                        break;
+                    }
+                    default: {
+                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_not_found, new HashMap<>()));
                         break;
                     }
 

@@ -57,4 +57,9 @@ public class Language {
     public static String LastManStanding_killed="%tag% &c%killed% was killed by %killer%";
     public static String LastManStanding_eliminated="%tag% %killed% was eliminated!";
     public static String Commands_setup_set_missing_selection="%tag% &cYou need to make a worldedit selection!";
+    public static String Command_revive_missing_player="%tag% &cPlease specify the player you want to revive!";
+    public static String Command_revive_player_noexist="%tag% &cThis player is not online!";
+    public static String Command_revive_event_norevive="%tag% &cThis event does not take revivals!";
+    public static String Command_revive_player_alive="%tag% &cThis player is already alive!";
+    public static String Command_revive_revived="%tag% &cPlayer was revived!";
 }

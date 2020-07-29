@@ -88,10 +88,10 @@ public class PlayerListener extends EventListener {
                         if (killer != null) {
                             hm.put("%killer%", killer.getName());
                             hm.put("%killed%", killed.getName());
-                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_killed, hm));
+                            c.announceMessage(MessageUtils.translateMessage(Language.Redrover_killed, hm));
                         } else {
                             hm.put("%killed%", killed.getName());
-                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated, hm));
+                            c.announceMessage(MessageUtils.translateMessage(Language.Redrover_eliminated, hm));
                         }
 
                     }
@@ -107,10 +107,10 @@ public class PlayerListener extends EventListener {
                         if (killer != null) {
                             hm.put("%killer%", killer.getName());
                             hm.put("%killed%", killed.getName());
-                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.LastManStanding_killed, hm));
+                            lms.announceMessage(MessageUtils.translateMessage(Language.LastManStanding_killed, hm));
                         } else {
                             hm.put("%killed%", killed.getName());
-                            ((RedRover) ev).announceMessage(MessageUtils.translateMessage(Language.LastManStanding_eliminated, hm));
+                            lms.announceMessage(MessageUtils.translateMessage(Language.LastManStanding_eliminated, hm));
                         }
                         e.getDrops().clear();
                     }
@@ -137,7 +137,7 @@ public class PlayerListener extends EventListener {
     }
 
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
         Event ev = EventManager.getEventPlayerPartaking(p);
@@ -145,10 +145,9 @@ public class PlayerListener extends EventListener {
             switch (ev.getType()) {
                 case WATERDROP: {
                     Waterdrop wd = (Waterdrop) ev;
-                    if (wd.eliminated.contains(p)) {
-                        e.setRespawnLocation(wd.getArena().getRegionByname("dead").getRandomLoc());
-                        p.teleport(wd.getArena().getRegionByname("dead").getRandomLoc());
-                    }
+                    Location l = ev.getArena().getRegionByname("dead").getRandomLoc();
+                    e.setRespawnLocation(l);
+                    p.teleport(l);
                     break;
                 }
                 case ONEINTHECHAMBER: {
@@ -166,16 +165,14 @@ public class PlayerListener extends EventListener {
                 }
                 case REDROVER: {
                     RedRover rr = (RedRover) ev;
-                    if (rr.eliminated.contains(p)) {
-                        e.setRespawnLocation(ev.getArena().getRegionByname("dead").getRandomLoc());
-                    }
+                    e.setRespawnLocation(ev.getArena().getRegionByname("dead").getRandomLoc());
                     break;
                 }
                 case LASTMANSTANDING: {
                     LastManStanding lms = (LastManStanding) ev;
-                    if (lms.eliminated.contains(p)) {
-                        e.setRespawnLocation(ev.getArena().getRegionByname("dead").getRandomLoc());
-                    }
+                    Location l = ev.getArena().getRegionByname("dead").getRandomLoc();
+                    e.setRespawnLocation(l);
+                    p.teleport(l);
                     break;
                 }
             }
