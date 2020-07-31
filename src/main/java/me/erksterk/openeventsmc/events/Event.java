@@ -182,4 +182,7 @@ public class Event {
         }
     }
 
+    public Player getHoster() {
+        return host;
+    }
 }

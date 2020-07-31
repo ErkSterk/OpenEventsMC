@@ -5,16 +5,24 @@ import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.Language;
 import me.erksterk.openeventsmc.events.*;
 import me.erksterk.openeventsmc.events.Waterdrop;
+import me.erksterk.openeventsmc.libraries.clicktunnel.Gui;
+import me.erksterk.openeventsmc.libraries.clicktunnel.GuiAction;
+import me.erksterk.openeventsmc.libraries.clicktunnel.GuiManager;
 import me.erksterk.openeventsmc.misc.*;
 import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,7 +67,7 @@ public class EventsCommand implements CommandExecutor {
                                             e.setType(EventType.LASTMANSTANDING);
                                             break;
                                         }
-                                        case "spleef":{
+                                        case "spleef": {
                                             e = new Spleef(eventname);
                                             e.setType(EventType.SPLEEF);
                                             break;
@@ -219,6 +227,7 @@ public class EventsCommand implements CommandExecutor {
                                         e.setStatus(EventStatus.STARTED);
                                         e.setHoster(p);
                                         e.start();
+                                        EventManager.loadChangesForMenu();
                                     } else {
                                         sender.sendMessage(MessageUtils.translateMessage(Language.Command_host_event_already, new HashMap<>()));
                                     }
@@ -249,6 +258,7 @@ public class EventsCommand implements CommandExecutor {
                                     }
                                 }
                             }
+                            EventManager.loadChangesForMenu();
                         } else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
                         }
@@ -316,12 +326,97 @@ public class EventsCommand implements CommandExecutor {
                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_event_norevive, new HashMap<>()));
                                             }
                                         }
-                                    }else{
-                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_player_alive,new HashMap<>()));
+                                    } else {
+                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_player_alive, new HashMap<>()));
                                     }
                                 } else {
                                     sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_player_noexist, new HashMap<>()));
                                 }
+                            }
+                        } else {
+                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
+                        }
+                        break;
+                    }
+                    case "menu": {
+                        if (sender.hasPermission("oemc.events.menu")) {
+                            Gui g = GuiManager.getGuiFromId("EventsMain");
+                            Player p = (Player) sender;
+                            p.openInventory(g.guiInv);
+                        } else {
+                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
+                        }
+                        break;
+                    }
+                    case "manage": {
+                        if (sender.hasPermission("oemc.events.manage")) {
+                            Player p = (Player) sender;
+                            Event e = EventManager.getEventByHoster(p);
+                            if (e != null) {
+                                GuiManager.createGui(e.getName(), 9, e.getName());
+                                Gui g = GuiManager.getGuiFromId(e.getName());
+
+                                ItemStack pause = new ItemStack(Material.WOOL, 1);
+                                ItemMeta pauseim = pause.getItemMeta();
+                                pauseim.setDisplayName("Toggle pause");
+                                List<String> lore = new ArrayList<>();
+                                if (e.running) {
+                                    lore.add("Status: RUNNING");
+                                } else {
+                                    lore.add("Status: PAUSED");
+                                }
+                                pauseim.setLore(lore);
+                                pause.setItemMeta(pauseim);
+
+                                ItemStack revive = new ItemStack(Material.POTION, 1);
+                                ItemMeta reviveim = pause.getItemMeta();
+                                reviveim.setDisplayName("Revival");
+                                revive.setItemMeta(reviveim);
+
+                                GuiAction pauseAction = new GuiAction(true);
+                                pauseAction.commandsPlayer.add("events pause " + e.getName());
+
+                                GuiAction reviveAction = new GuiAction(true);
+                                reviveAction.commandsPlayer.add("events revivalmenu " + e.getName());
+
+                                g.setItem(pause, 0, pauseAction);
+                                g.setItem(revive, 1, reviveAction);
+
+                                p.openInventory(g.guiInv);
+                            } else {
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_host_none,new HashMap<>()));
+                            }
+                        } else {
+                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
+                        }
+                        break;
+                    }
+                    case "revivalmenu": {
+                        if (sender.hasPermission("oemc.events.revivalmenu")) {
+                            Player p = (Player) sender;
+                            Event e = EventManager.getEventByHoster(p);
+                            if (e != null) {
+                                GuiManager.createGui(e.getName()+"_revive", 54, e.getName()+"_revive");
+                                Gui g = GuiManager.getGuiFromId(e.getName()+"_revive");
+
+                                int slot = 0;
+                                for(Player el : e.eliminated) {
+                                    ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
+                                    SkullMeta m = (SkullMeta) skull.getItemMeta();
+                                    m.setOwner(el.getName());
+                                    m.setDisplayName(el.getName());
+                                    skull.setItemMeta(m);
+
+                                    GuiAction pauseAction = new GuiAction(true);
+                                    pauseAction.commandsPlayer.add("events revive " + el.getName());
+                                    pauseAction.closeGui=true;
+                                    g.setItem(skull, slot, pauseAction);
+                                    slot++;
+                                }
+
+                                p.openInventory(g.guiInv);
+                            }else{
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_host_none,new HashMap<>()));
                             }
                         } else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));

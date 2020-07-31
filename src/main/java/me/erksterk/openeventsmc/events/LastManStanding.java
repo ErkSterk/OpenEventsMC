@@ -89,5 +89,6 @@ public class LastManStanding extends Event {
         getPlayers().clear();
         eliminated.clear();
         schedulerSeconds=0;
+        setHoster(null);
     }
 }

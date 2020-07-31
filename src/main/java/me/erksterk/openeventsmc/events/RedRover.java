@@ -48,6 +48,7 @@ public class RedRover extends Event {
             announceMessage(MessageUtils.translateMessage(Language.Redrover_nowinner, new HashMap<>()));
             eliminated.clear();
             clearPlayers();
+            setHoster(null);
         } else if (partaking.size() == 1) {
             running = false;
             setStatus(EventStatus.STOPPED);
@@ -57,6 +58,7 @@ public class RedRover extends Event {
             announceMessage(MessageUtils.translateMessage(Language.Redrover_winner, hm));
             eliminated.clear();
             clearPlayers();
+            setHoster(null);
         }
     }
 

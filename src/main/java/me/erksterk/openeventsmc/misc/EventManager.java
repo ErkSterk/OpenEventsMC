@@ -3,10 +3,15 @@ package me.erksterk.openeventsmc.misc;
 import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.ConfigManager;
 import me.erksterk.openeventsmc.events.*;
+import me.erksterk.openeventsmc.libraries.clicktunnel.Gui;
+import me.erksterk.openeventsmc.libraries.clicktunnel.GuiAction;
+import me.erksterk.openeventsmc.libraries.clicktunnel.GuiManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -30,28 +35,28 @@ public class EventManager {
                     e.setType(EventType.WATERDROP);
                     break;
                 }
-                case "ONEINTHECHAMBER":{
+                case "ONEINTHECHAMBER": {
                     e = new OneInTheChamber(eventname);
                     e.setType(EventType.ONEINTHECHAMBER);
                     break;
                 }
-                case "REDROVER":{
+                case "REDROVER": {
                     e = new RedRover(eventname);
                     e.setType(EventType.REDROVER);
                     break;
                 }
-                case "LASTMANSTANDING":{
+                case "LASTMANSTANDING": {
                     e = new LastManStanding(eventname);
                     e.setType(EventType.LASTMANSTANDING);
                     break;
                 }
-                case "SPLEEF":{
+                case "SPLEEF": {
                     e = new Spleef(eventname);
                     e.setType(EventType.SPLEEF);
                     break;
                 }
             }
-            if(conf.getEvent().isConfigurationSection(eventname+".arena")) {
+            if (conf.getEvent().isConfigurationSection(eventname + ".arena")) {
                 for (String arena : conf.getEvent().getConfigurationSection(eventname + ".arena").getKeys(false)) {
                     String loc1 = conf.getEvent().getString(eventname + ".arena." + arena + ".loc1");
                     String[] l1 = loc1.split("_");
@@ -73,7 +78,7 @@ public class EventManager {
                     e.setFields.add("arena." + arena);
                 }
             }
-            if(conf.getEvent().isConfigurationSection(eventname+".config")) {
+            if (conf.getEvent().isConfigurationSection(eventname + ".config")) {
                 for (String c : conf.getEvent().getConfigurationSection(eventname + ".config").getKeys(false)) {
                     String v = conf.getEvent().getString(eventname + ".config." + c);
                     try {
@@ -92,17 +97,17 @@ public class EventManager {
                     e.setFields.add("config." + c);
                 }
             }
-            if(conf.getEvent().isConfigurationSection(eventname+".inventory")){
+            if (conf.getEvent().isConfigurationSection(eventname + ".inventory")) {
                 for (String c : conf.getEvent().getConfigurationSection(eventname + ".inventory").getKeys(false)) {
                     List<ItemStack> items = new ArrayList<>();
-                    for(String s : conf.getEvent().getConfigurationSection(eventname + ".inventory."+c).getKeys(false)){
-                        ItemStack it = conf.getEvent().getItemStack(eventname + ".inventory."+c+"."+s);
+                    for (String s : conf.getEvent().getConfigurationSection(eventname + ".inventory." + c).getKeys(false)) {
+                        ItemStack it = conf.getEvent().getItemStack(eventname + ".inventory." + c + "." + s);
                         items.add(it);
                     }
-                    if(c.contains("start_gear")){
-                        e.start_gear=items;
-                    }else if(c.contains("respawn_gear")){
-                        e.respawn_gear=items;
+                    if (c.contains("start_gear")) {
+                        e.start_gear = items;
+                    } else if (c.contains("respawn_gear")) {
+                        e.respawn_gear = items;
                     }
                     e.setFields.add("inventory." + c);
                 }
@@ -112,7 +117,65 @@ public class EventManager {
             events.add(e);
         }
         Main.writeToConsole("&aFinished loading Events from config!");
+        loadChangesForMenu();
+    }
 
+    public static Material getMaterialForMenu(EventType type) {
+        switch (type) {
+            case WATERDROP:
+                return Material.WATER_BUCKET;
+            case SPLEEF:
+                return Material.IRON_SPADE;
+            case LASTMANSTANDING:
+                return Material.GOLDEN_APPLE;
+            case REDROVER:
+                return Material.WOOL;
+            case ONEINTHECHAMBER:
+                return Material.BOW;
+            default:
+                return Material.DIRT;
+        }
+    }
+
+
+    public static Event getEventByHoster(Player p){
+        for(Event e : events){
+            if(e.getHoster()!=null) {
+                if (e.getHoster().getName().equalsIgnoreCase(p.getName())) {
+                    return e;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void loadChangesForMenu() {
+        for (EventType t : EventType.values()) {
+            Gui gui = GuiManager.getGuiFromId(t.toString());
+            int slot = 0;
+            gui.guiInv.clear();
+            for (Event e : EventManager.getAllEventsOfType(t)) {
+                ItemStack it = new ItemStack(getMaterialForMenu(t), 1);
+                ItemMeta im = it.getItemMeta();
+                im.setDisplayName(e.getName());
+                List<String> lore = new ArrayList<>();
+                lore.add("Status: " + e.getStatus().name());
+                Player h = e.getHoster();
+                String n = "None";
+                if (h != null) {
+                    n = h.getName();
+                }
+                lore.add("Hoster: "+n);
+                im.setLore(lore);
+                it.setItemMeta(im);
+
+                GuiAction action = new GuiAction(true);
+                action.closeGui=true;
+                action.commandsPlayer.add("events host "+e.getName());
+                gui.setItem(it, slot, action);
+                slot++;
+            }
+        }
     }
 
     public static void saveEventsToConfig() {
@@ -133,11 +196,11 @@ public class EventManager {
                         conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc2", r.getMax().getWorld().getName() + "_" + r.getMax().getBlockX() + "_" + r.getMax().getBlockY() + "_" + r.getMax().getBlockZ());
                     }
                 }
-            }catch (NullPointerException ex){
+            } catch (NullPointerException ex) {
                 System.out.println("No arena found!");
             }
             for (String c : e.requiredFields) {
-                if(c.contains("config.")) {
+                if (c.contains("config.")) {
                     String f = c.split("\\.")[1];
                     String v = null;
                     try {
@@ -148,20 +211,20 @@ public class EventManager {
                     } catch (IllegalAccessException ex) {
 
                     }
-                    conf.getEvent().set(e.getName()+"."+c,v);
-                }else if(c.contains("inventory.")){
-                    if(c.equalsIgnoreCase("inventory.start_gear")) {
+                    conf.getEvent().set(e.getName() + "." + c, v);
+                } else if (c.contains("inventory.")) {
+                    if (c.equalsIgnoreCase("inventory.start_gear")) {
                         List<ItemStack> li = e.getEventStartGear();
-                        int i=0;
-                        for(ItemStack it : li) {
-                            conf.getEvent().set(e.getName() + "." + c+"."+i, it);
+                        int i = 0;
+                        for (ItemStack it : li) {
+                            conf.getEvent().set(e.getName() + "." + c + "." + i, it);
                             i++;
                         }
-                    }else if(c.equalsIgnoreCase("inventory.respawn_gear")) {
+                    } else if (c.equalsIgnoreCase("inventory.respawn_gear")) {
                         List<ItemStack> li = e.respawn_gear;
-                        int i=0;
-                        for(ItemStack it : li) {
-                            conf.getEvent().set(e.getName() + "." + c+"."+i, it);
+                        int i = 0;
+                        for (ItemStack it : li) {
+                            conf.getEvent().set(e.getName() + "." + c + "." + i, it);
                             i++;
                         }
                     }
@@ -169,6 +232,7 @@ public class EventManager {
             }
             conf.saveEvent();
         }
+        loadChangesForMenu();
     }
 
     public static void createEvent(Event e) {
@@ -208,4 +272,13 @@ public class EventManager {
         return null;
     }
 
+    public static List<Event> getAllEventsOfType(EventType eventtype) {
+        List<Event> ev = new ArrayList<>();
+        for (Event e : events) {
+            if (e.getType() == eventtype) {
+                ev.add(e);
+            }
+        }
+        return ev;
+    }
 }

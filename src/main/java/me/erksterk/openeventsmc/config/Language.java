@@ -65,4 +65,5 @@ public class Language {
     public static String Spleef_eliminated="%tag% %killed% was eliminated!";
     public static String Spleef_nowinner="%tag% &cAll participants are dead, nobody won the event!";
     public static String Spleef_winner="%tag% &a%player% has won the event!";
+    public static String Event_host_none="%tag% &cYou are currently not hosting an event!";
 }

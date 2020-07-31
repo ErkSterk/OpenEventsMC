@@ -115,6 +115,7 @@ public class Waterdrop extends Event {
             clearPlayers();
             taskGame.cancel();
             taskMove.cancel();
+            setHoster(null);
         } else if (alive.size() == 1) {
             String message = Language.Waterdrop_winner;
             HashMap<String,String> args = new HashMap<>();
@@ -131,6 +132,7 @@ public class Waterdrop extends Event {
             clearPlayers();
             taskGame.cancel();
             taskMove.cancel();
+            setHoster(null);
         }
     }
 

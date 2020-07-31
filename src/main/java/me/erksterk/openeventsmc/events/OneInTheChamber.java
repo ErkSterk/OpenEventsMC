@@ -240,6 +240,7 @@ public class OneInTheChamber extends Event {
         clearPlayers();
         clearScoreboard();
         schedulerSeconds=0;
+        setHoster(null);
     }
 
     private void clearScoreboard() {

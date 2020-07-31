@@ -99,6 +99,7 @@ public class Spleef extends Event {
             running = false;
             clear();
             setStatus(EventStatus.STOPPED);
+            setHoster(null);
         } else if (alive.size() == 1) {
             Player p = alive.get(0);
             HashMap<String,String> hm = new HashMap<>();
@@ -111,6 +112,7 @@ public class Spleef extends Event {
             running = false;
             clear();
             setStatus(EventStatus.STOPPED);
+            setHoster(null);
         }
     }
 
