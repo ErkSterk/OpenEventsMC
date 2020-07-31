@@ -20,4 +20,6 @@ public class Config {
     public static boolean redrover_announce_to_all_online=false;
     public static boolean lms_announce_to_all_partaking=true;
     public static boolean lms_announce_to_all_online=false;
+    public static boolean spleef_announce_to_all_online=false;
+    public static boolean spleef_announce_to_all_partaking=true;
 }

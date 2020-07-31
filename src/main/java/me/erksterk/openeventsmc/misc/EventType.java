@@ -4,5 +4,6 @@ public enum EventType {
     WATERDROP,
     ONEINTHECHAMBER,
     REDROVER,
-    LASTMANSTANDING
+    LASTMANSTANDING,
+    SPLEEF
 }

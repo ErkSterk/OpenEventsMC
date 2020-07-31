@@ -62,4 +62,7 @@ public class Language {
     public static String Command_revive_event_norevive="%tag% &cThis event does not take revivals!";
     public static String Command_revive_player_alive="%tag% &cThis player is already alive!";
     public static String Command_revive_revived="%tag% &cPlayer was revived!";
+    public static String Spleef_eliminated="%tag% %killed% was eliminated!";
+    public static String Spleef_nowinner="%tag% &cAll participants are dead, nobody won the event!";
+    public static String Spleef_winner="%tag% &a%player% has won the event!";
 }

@@ -7,8 +7,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Region {
 
-    private Location min = null;
-    private Location max = null;
+    private Location min;
+    private Location max;
     private String name;
 
     public Region(Location l1, Location l2, String name) {
@@ -41,16 +41,16 @@ public class Region {
             zmin = l1.getBlockZ();
             zmax = l2.getBlockZ();
         }
-        min = new Location(world, xmin, ymin, zmin);
-        max = new Location(world, xmax, ymax, zmax);
+        this.min = new Location(world, xmin, ymin, zmin);
+        this.max = new Location(world, xmax, ymax, zmax);
     }
 
     public Location getMin() {
-        return min;
+        return this.min;
     }
 
     public Location getMax() {
-        return max;
+        return this.max;
     }
 
     public String getName() {

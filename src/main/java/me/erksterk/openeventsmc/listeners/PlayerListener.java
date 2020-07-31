@@ -11,12 +11,10 @@ import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -115,7 +113,36 @@ public class PlayerListener extends EventListener {
                         e.getDrops().clear();
                     }
                 }
+                case SPLEEF: {
+                    Spleef sple = (Spleef) ev;
+                    if (sple.running) {
+                        Player killed = e.getEntity();
+                        sple.eliminated.add(killed);
+                        HashMap<String, String> hm = new HashMap<>();
+                        hm.put("%killed%", killed.getName());
+                        sple.announceMessage(MessageUtils.translateMessage(Language.Spleef_eliminated, hm));
+                        e.getDrops().clear();
+                    }
+                }
+            }
+        }
+    }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBreak(BlockBreakEvent e) {
+        Player p = e.getPlayer();
+        Event ev = EventManager.getEventPlayerPartaking(p);
+        if (ev != null) {
+            switch (ev.getType()) {
+                case SPLEEF:{
+                    if(e.getBlock().getType()==Material.SNOW_BLOCK) {
+                        e.getBlock().setType(Material.AIR);
+                        p.getInventory().addItem(new ItemStack(Material.SNOW_BALL,1));
+                        e.setCancelled(true);
+                    }else{
+                        e.setCancelled(true);
+                    }
+                }
             }
         }
     }
@@ -170,6 +197,12 @@ public class PlayerListener extends EventListener {
                 }
                 case LASTMANSTANDING: {
                     LastManStanding lms = (LastManStanding) ev;
+                    Location l = ev.getArena().getRegionByname("dead").getRandomLoc();
+                    e.setRespawnLocation(l);
+                    p.teleport(l);
+                    break;
+                }
+                case SPLEEF: {
                     Location l = ev.getArena().getRegionByname("dead").getRandomLoc();
                     e.setRespawnLocation(l);
                     p.teleport(l);
@@ -244,6 +277,12 @@ public class PlayerListener extends EventListener {
                                     e.setCancelled(true);
                                 }
 
+                            }
+                            case WATERDROP:{
+                                e.setCancelled(true);
+                            }
+                            case SPLEEF:{
+                                e.setCancelled(true);
                             }
                         }
                     }

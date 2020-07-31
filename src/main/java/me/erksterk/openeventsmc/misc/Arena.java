@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Arena {
 
-    private Region arenaRegion;
+    private Region arenaRegion=null;
     private List<Region> arenaregions = new ArrayList<>();
 
     public Arena(Region arena){

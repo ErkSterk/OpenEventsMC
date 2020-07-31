@@ -45,6 +45,11 @@ public class EventManager {
                     e.setType(EventType.LASTMANSTANDING);
                     break;
                 }
+                case "SPLEEF":{
+                    e = new Spleef(eventname);
+                    e.setType(EventType.SPLEEF);
+                    break;
+                }
             }
             if(conf.getEvent().isConfigurationSection(eventname+".arena")) {
                 for (String arena : conf.getEvent().getConfigurationSection(eventname + ".arena").getKeys(false)) {
@@ -116,16 +121,20 @@ public class EventManager {
             conf.getEvent().set(e.getName() + ".name", e.getName());
             conf.getEvent().set(e.getName() + ".type", e.getType().toString());
             Arena a = e.getArena();
-            if (a != null) {
-                Region m = a.getArenaBoundRegion();
-                if (m != null) {
-                    conf.getEvent().set(e.getName() + ".arena.main.loc1", m.getMin().getWorld().getName() + "_" + m.getMin().getBlockX() + "_" + m.getMin().getBlockY() + "_" + m.getMin().getBlockZ());
-                    conf.getEvent().set(e.getName() + ".arena.main.loc2", m.getMax().getWorld().getName() + "_" + m.getMax().getBlockX() + "_" + m.getMax().getBlockY() + "_" + m.getMax().getBlockZ());
+            try {
+                if (a != null) {
+                    Region m = a.getArenaBoundRegion();
+                    if (m != null) {
+                        conf.getEvent().set(e.getName() + ".arena.main.loc1", m.getMin().getWorld().getName() + "_" + m.getMin().getBlockX() + "_" + m.getMin().getBlockY() + "_" + m.getMin().getBlockZ());
+                        conf.getEvent().set(e.getName() + ".arena.main.loc2", m.getMax().getWorld().getName() + "_" + m.getMax().getBlockX() + "_" + m.getMax().getBlockY() + "_" + m.getMax().getBlockZ());
+                    }
+                    for (Region r : a.getAllRegions()) {
+                        conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc1", r.getMin().getWorld().getName() + "_" + r.getMin().getBlockX() + "_" + r.getMin().getBlockY() + "_" + r.getMin().getBlockZ());
+                        conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc2", r.getMax().getWorld().getName() + "_" + r.getMax().getBlockX() + "_" + r.getMax().getBlockY() + "_" + r.getMax().getBlockZ());
+                    }
                 }
-                for (Region r : a.getAllRegions()) {
-                    conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc1", r.getMin().getWorld().getName() + "_" + r.getMin().getBlockX() + "_" + r.getMin().getBlockY() + "_" + r.getMin().getBlockZ());
-                    conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc2", r.getMax().getWorld().getName() + "_" + r.getMax().getBlockX() + "_" + r.getMax().getBlockY() + "_" + r.getMax().getBlockZ());
-                }
+            }catch (NullPointerException ex){
+                System.out.println("No arena found!");
             }
             for (String c : e.requiredFields) {
                 if(c.contains("config.")) {

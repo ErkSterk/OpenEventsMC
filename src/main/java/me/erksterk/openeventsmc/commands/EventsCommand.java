@@ -59,6 +59,11 @@ public class EventsCommand implements CommandExecutor {
                                             e.setType(EventType.LASTMANSTANDING);
                                             break;
                                         }
+                                        case "spleef":{
+                                            e = new Spleef(eventname);
+                                            e.setType(EventType.SPLEEF);
+                                            break;
+                                        }
                                     }
                                     if (e != null) {
                                         if (EventManager.isEventNameAvailable(eventname)) {

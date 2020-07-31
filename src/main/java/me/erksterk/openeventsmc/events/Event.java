@@ -19,10 +19,10 @@ public class Event {
     private List<Player> players = new ArrayList<>();
     public List<Player> eliminated = new ArrayList<>();
 
-    private Arena arena;
-    private EventStatus status;
-    private String name;
-    private EventType type;
+    private Arena arena=null;
+    private EventStatus status=null;
+    private String name=null;
+    private EventType type=null;
 
     public List<ItemStack> start_gear = new ArrayList<>();
     public List<ItemStack> respawn_gear = new ArrayList<>();
