@@ -72,6 +72,11 @@ public class EventsCommand implements CommandExecutor {
                                             e.setType(EventType.SPLEEF);
                                             break;
                                         }
+                                        case "woolshuffle": {
+                                            e = new WoolShuffle(eventname);
+                                            e.setType(EventType.WOOLSHUFFLE);
+                                            break;
+                                        }
                                     }
                                     if (e != null) {
                                         if (EventManager.isEventNameAvailable(eventname)) {
@@ -157,6 +162,7 @@ public class EventsCommand implements CommandExecutor {
                                                                 EventManager.setEvent(e);
                                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_success, new HashMap<>()));
                                                             } catch (NoSuchFieldException ex) {
+                                                                ex.printStackTrace();
                                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_invalid, new HashMap<>()));
                                                             } catch (IllegalAccessException ex) {
                                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_setup_set_illegal, new HashMap<>()));

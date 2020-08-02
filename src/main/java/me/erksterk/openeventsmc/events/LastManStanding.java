@@ -90,5 +90,6 @@ public class LastManStanding extends Event {
         eliminated.clear();
         schedulerSeconds=0;
         setHoster(null);
+        taskGame.cancel();
     }
 }

@@ -241,6 +241,7 @@ public class OneInTheChamber extends Event {
         clearScoreboard();
         schedulerSeconds=0;
         setHoster(null);
+        taskGame.cancel();
     }
 
     private void clearScoreboard() {

@@ -66,4 +66,8 @@ public class Language {
     public static String Spleef_nowinner="%tag% &cAll participants are dead, nobody won the event!";
     public static String Spleef_winner="%tag% &a%player% has won the event!";
     public static String Event_host_none="%tag% &cYou are currently not hosting an event!";
+    public static String Woolshuffle_eliminated="%tag% &c%player% was eliminated!";
+    public static String Woolshuffle_nowinner="%tag% &cAll participants are dead, nobody won the event!";
+    public static String Woolshuffle_winner="%tag% &a%player% has won the event!";
+    public static String Woolshuffle_goto="%tag% &cGo to %color%";
 }

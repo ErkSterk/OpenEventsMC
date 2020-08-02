@@ -49,6 +49,7 @@ public class RedRover extends Event {
             eliminated.clear();
             clearPlayers();
             setHoster(null);
+            taskGame.cancel();
         } else if (partaking.size() == 1) {
             running = false;
             setStatus(EventStatus.STOPPED);
@@ -59,6 +60,7 @@ public class RedRover extends Event {
             eliminated.clear();
             clearPlayers();
             setHoster(null);
+            taskGame.cancel();
         }
     }
 

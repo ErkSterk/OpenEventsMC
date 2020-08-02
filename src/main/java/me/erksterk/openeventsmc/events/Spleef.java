@@ -100,6 +100,7 @@ public class Spleef extends Event {
             clear();
             setStatus(EventStatus.STOPPED);
             setHoster(null);
+            taskGame.cancel();
         } else if (alive.size() == 1) {
             Player p = alive.get(0);
             HashMap<String,String> hm = new HashMap<>();
@@ -113,6 +114,7 @@ public class Spleef extends Event {
             clear();
             setStatus(EventStatus.STOPPED);
             setHoster(null);
+            taskGame.cancel();
         }
     }
 
@@ -122,6 +124,8 @@ public class Spleef extends Event {
         taskGame = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.plugin, () -> {
 
             if (running) {
+                setStatus(EventStatus.RUNNING);
+
                 for (Player p : getAllPlayersInRegionXZ(r)) {
                     Location l = getArena().getRegionByname("game").getRandomLoc();
                     l.setY(getArena().getRegionByname("game").getMax().getBlockY());

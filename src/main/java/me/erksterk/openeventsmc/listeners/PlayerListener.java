@@ -284,6 +284,9 @@ public class PlayerListener extends EventListener {
                             case SPLEEF:{
                                 e.setCancelled(true);
                             }
+                            case WOOLSHUFFLE:{
+                                e.setCancelled(true);
+                            }
                         }
                     }
                 }

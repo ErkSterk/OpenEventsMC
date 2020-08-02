@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Wool;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -55,6 +56,12 @@ public class EventManager {
                     e.setType(EventType.SPLEEF);
                     break;
                 }
+                case "WOOLSHUFFLE": {
+                    e = new WoolShuffle(eventname);
+                    e.setType(EventType.WOOLSHUFFLE);
+                    break;
+                }
+
             }
             if (conf.getEvent().isConfigurationSection(eventname + ".arena")) {
                 for (String arena : conf.getEvent().getConfigurationSection(eventname + ".arena").getKeys(false)) {
