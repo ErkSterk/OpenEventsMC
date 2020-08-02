@@ -8,13 +8,14 @@
 OpenEventsMC is a free and open-source events plugin for your server.<br>
 The project aims to automate hosting of popular events in Minecraft.<br>
 The project is currently in an alpha state so please post on issues if you find bugs or want something improved or added!<br>
-We have a discord server: https://discord.gg/C26qAqy<br>
+We have a discord server: https://discord.gg/4mRNEur<br>
 
 ### What we have ready:
 Waterdrop<br>
 One in the chamber<br>
 RedRover<br>
 LastManStanding<br>
+Spleef<br>
 
 ### What we are planning to add in the future:
 Check out the issues page, there should be issues on what we are working on.<br>
