@@ -34,6 +34,9 @@ public class Waterdrop extends Event {
         requiredFields.add("arena.player");
         requiredFields.add("arena.wait");
         requiredFields.add("arena.dead");
+
+        announce_to_all_online=Config.waterdrop_announce_to_all_online;
+        announce_to_all_partaking=Config.waterdrop_announce_to_all_partaking;
     }
 
 
@@ -113,9 +116,10 @@ public class Waterdrop extends Event {
             setStatus(EventStatus.STOPPED);
             eliminated.clear();
             clearPlayers();
+            setHoster(null);
             taskGame.cancel();
             taskMove.cancel();
-            setHoster(null);
+
         } else if (alive.size() == 1) {
             String message = Language.Waterdrop_winner;
             HashMap<String,String> args = new HashMap<>();
@@ -130,18 +134,10 @@ public class Waterdrop extends Event {
             setStatus(EventStatus.STOPPED);
             eliminated.clear();
             clearPlayers();
+            setHoster(null);
             taskGame.cancel();
             taskMove.cancel();
-            setHoster(null);
-        }
-    }
 
-    public void announceMessage(String message) {
-        if(Config.waterdrop_announce_to_all_online) {
-            Bukkit.broadcastMessage(message);
-        }
-        if(Config.waterdrop_announce_to_all_partaking){
-            sendMessageToPartaking(message);
         }
     }
 

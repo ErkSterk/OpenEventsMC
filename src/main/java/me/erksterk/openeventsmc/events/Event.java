@@ -1,9 +1,11 @@
 package me.erksterk.openeventsmc.events;
 
+import me.erksterk.openeventsmc.config.Config;
 import me.erksterk.openeventsmc.misc.Arena;
 import me.erksterk.openeventsmc.misc.EventStatus;
 import me.erksterk.openeventsmc.misc.EventType;
 import me.erksterk.openeventsmc.misc.Region;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +27,11 @@ public class Event {
     private String name=null;
     private EventType type=null;
 
+    protected boolean announce_to_all_online=false;
+    protected boolean announce_to_all_partaking=true;
+
+
+
     public List<ItemStack> start_gear = new ArrayList<>();
     public List<ItemStack> respawn_gear = new ArrayList<>();
     public HashMap<String,Object> forcedMaps = new HashMap<>();
@@ -34,6 +41,15 @@ public class Event {
     public List<String> setFields = new ArrayList<>();
     private Player host;
 
+
+    public void announceMessage(String message) {
+        if (announce_to_all_online) {
+            Bukkit.broadcastMessage(message);
+        }
+        if (announce_to_all_partaking) {
+            sendMessageToPartaking(message);
+        }
+    }
 
     public Event(String name) {
         this.status = EventStatus.STOPPED;
@@ -64,6 +80,7 @@ public class Event {
 
     public void leavePlayer(Player p) {
         players.remove(p);
+        eliminated.remove(p);
     }
 
     public void clearPlayers() {

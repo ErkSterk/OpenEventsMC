@@ -44,6 +44,9 @@ public class OneInTheChamber extends Event {
 
         forcedMaps.put("region.player.pvp",true);
 
+        announce_to_all_online=Config.oitc_announce_to_all_online;
+        announce_to_all_partaking=Config.oitc_announce_to_all_partaking;
+
     }
 
 
@@ -185,14 +188,6 @@ public class OneInTheChamber extends Event {
 
         for(ItemStack it : getEventStartGear()){
             p.getInventory().addItem(it);
-        }
-    }
-    public void announceMessage(String message) {
-        if(Config.oitc_announce_to_all_online) {
-            Bukkit.broadcastMessage(message);
-        }
-        if(Config.oitc_announce_to_all_partaking){
-            sendMessageToPartaking(message);
         }
     }
 

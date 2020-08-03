@@ -37,6 +37,10 @@ public class Spleef extends Event {
         conds.add(Material.SNOW_BLOCK);
         breakIf.put(Material.AIR, conds);
         forcedMaps.put("region.game.breakIf", breakIf);
+
+        announce_to_all_online=Config.spleef_announce_to_all_online;
+        announce_to_all_partaking=Config.spleef_announce_to_all_partaking;
+
     }
 
     public void generateLocations() {
@@ -76,14 +80,6 @@ public class Spleef extends Event {
         }
     }
 
-    public void announceMessage(String message) {
-        if (Config.spleef_announce_to_all_online) {
-            Bukkit.broadcastMessage(message);
-        }
-        if (Config.spleef_announce_to_all_partaking) {
-            sendMessageToPartaking(message);
-        }
-    }
 
     public void resetSnow() {
         for (Location l : snow) {

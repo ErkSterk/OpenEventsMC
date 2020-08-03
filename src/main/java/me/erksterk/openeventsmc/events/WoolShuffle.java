@@ -37,6 +37,9 @@ public class WoolShuffle extends Event {
         requiredFields.add("arena.dead");
         requiredFields.add("config.waittime");
         requiredFields.add("config.warntime");
+
+        announce_to_all_online=Config.woolshuffle_announce_to_all_online;
+        announce_to_all_partaking=Config.woolshuffle_announce_to_all_partaking;
     }
 
     private void checkForWinner() {
@@ -65,7 +68,6 @@ public class WoolShuffle extends Event {
             eliminated.clear();
             clearPlayers();
             setHoster(null);
-
             taskGame.cancel();
             taskMove.cancel();
         }
@@ -76,14 +78,6 @@ public class WoolShuffle extends Event {
         p.teleport(getArena().getRegionByname("wait").getRandomLoc());
     }
 
-    public void announceMessage(String message) {
-        if (Config.woolshuffle_announce_to_all_online) {
-            Bukkit.broadcastMessage(message);
-        }
-        if (Config.woolshuffle_announce_to_all_partaking) {
-            sendMessageToPartaking(message);
-        }
-    }
 
     public ChatColor translateDyeToCC(DyeColor dc){
         switch (dc){

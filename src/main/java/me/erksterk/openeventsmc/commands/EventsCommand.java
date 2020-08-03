@@ -272,25 +272,47 @@ public class EventsCommand implements CommandExecutor {
                     }
                     case "join": {
                         if (sender.hasPermission("oemc.events.join")) {
-                            if (args.length == 1) {
-                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_missing_event, new HashMap<>()));
-                            } else {
-                                Event e = EventManager.getEventFromName(args[1]);
-                                if (e != null) {
-                                    if (e.getStatus() == EventStatus.STARTED) {
-                                        Player p = (Player) sender;
-                                        e.joinPlayer(p);
-                                        HashMap<String, String> ar = new HashMap<>();
-                                        ar.put("%player%", p.getName());
-                                        p.sendMessage(MessageUtils.translateMessage(Language.Event_join, ar));
-                                    } else {
-                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_not_running, new HashMap<>()));
-                                    }
+                            Player p = (Player) sender;
+                            Event ev = EventManager.getEventPlayerPartaking(p);
+                            if (ev != null) {
+                                p.sendMessage(MessageUtils.translateMessage(Language.Event_join_already,new HashMap<>()));
+                            }else {
+                                if (args.length == 1) {
+                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_missing_event, new HashMap<>()));
                                 } else {
-                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_event_not_exists, new HashMap<>()));
+                                    Event e = EventManager.getEventFromName(args[1]);
+                                    if (e != null) {
+                                        if (e.getStatus() == EventStatus.STARTED) {
+                                            e.joinPlayer(p);
+                                            HashMap<String, String> ar = new HashMap<>();
+                                            ar.put("%player%", p.getName());
+                                            p.sendMessage(MessageUtils.translateMessage(Language.Event_join, ar));
+                                        } else {
+                                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_not_running, new HashMap<>()));
+                                        }
+                                    } else {
+                                        sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_event_not_exists, new HashMap<>()));
+                                    }
                                 }
                             }
                         } else {
+                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
+                        }
+                        break;
+                    }
+                    case "leave":{
+                        if (sender.hasPermission("oemc.events.leave")) {
+                            Player p = (Player) sender;
+                            Event ev = EventManager.getEventPlayerPartaking(p);
+                            if (ev != null) {
+                                HashMap<String, String> hm = new HashMap<>();
+                                hm.put("%player%", p.getName());
+                                ev.announceMessage(MessageUtils.translateMessage(Language.Event_left_server, hm));
+                                ev.leavePlayer(p);
+                            }else{
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_left_no_event,new HashMap<>()));
+                            }
+                        }else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
                         }
                         break;

@@ -27,6 +27,8 @@ public class LastManStanding extends Event {
 
         forcedMaps.put("region.pvp.pvp",true);
 
+        announce_to_all_online=Config.lms_announce_to_all_online;
+        announce_to_all_partaking=Config.lms_announce_to_all_partaking;
     }
 
     private BukkitTask taskGame = null;
@@ -45,14 +47,6 @@ public class LastManStanding extends Event {
         }
     }
 
-    public void announceMessage(String message) {
-        if (Config.lms_announce_to_all_online) {
-            Bukkit.broadcastMessage(message);
-        }
-        if (Config.lms_announce_to_all_partaking) {
-            sendMessageToPartaking(message);
-        }
-    }
 
     public void start() {
         taskGame = Bukkit.getScheduler().runTaskTimerAsynchronously(Main.plugin, () -> {

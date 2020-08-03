@@ -34,6 +34,9 @@ public class RedRover extends Event {
         requiredFields.add("config.peacetime");
 
         forcedMaps.put("region.pvp.pvp",true);
+
+        announce_to_all_online=Config.redrover_announce_to_all_online;
+        announce_to_all_partaking=Config.redrover_announce_to_all_partaking;
     }
 
     public void checkForWinner() {
@@ -75,14 +78,6 @@ public class RedRover extends Event {
         }
     }
 
-    public void announceMessage(String message) {
-        if (Config.redrover_announce_to_all_online) {
-            Bukkit.broadcastMessage(message);
-        }
-        if (Config.redrover_announce_to_all_partaking) {
-            sendMessageToPartaking(message);
-        }
-    }
 
     boolean peace = false; //is it currently peace?
     public boolean red = true; //current area

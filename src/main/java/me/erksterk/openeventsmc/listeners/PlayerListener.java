@@ -22,6 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -347,6 +348,19 @@ public class PlayerListener extends EventListener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void PlayerQuit(PlayerQuitEvent e) {
+        Player p = e.getPlayer();
+        Event ev = EventManager.getEventPlayerPartaking(p);
+        if (ev != null) {
+            ev.leavePlayer(p);
+            HashMap<String,String> hm = new HashMap<>();
+            hm.put("%player%",p.getName());
+            ev.announceMessage(MessageUtils.translateMessage(Language.Event_left_server,hm));
+        }
+
     }
 
 }

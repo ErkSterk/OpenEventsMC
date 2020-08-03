@@ -70,4 +70,7 @@ public class Language {
     public static String Woolshuffle_nowinner="%tag% &cAll participants are dead, nobody won the event!";
     public static String Woolshuffle_winner="%tag% &a%player% has won the event!";
     public static String Woolshuffle_goto="%tag% &cGo to %color%";
+    public static String Event_left_server="%tag% &c%player% has Left!";
+    public static String Event_left_no_event="%tag% &cYou are not in an event!";
+    public static String Event_join_already="%tag% &cYou are already in an event, leave the current one first!";
 }
