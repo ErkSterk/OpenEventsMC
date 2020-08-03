@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Event {
@@ -26,6 +27,7 @@ public class Event {
 
     public List<ItemStack> start_gear = new ArrayList<>();
     public List<ItemStack> respawn_gear = new ArrayList<>();
+    public HashMap<String,Object> forcedMaps = new HashMap<>();
 
 
     public List<String> requiredFields = new ArrayList<>();

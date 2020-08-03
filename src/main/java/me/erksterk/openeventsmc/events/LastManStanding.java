@@ -24,6 +24,9 @@ public class LastManStanding extends Event {
         requiredFields.add("arena.wait");
         requiredFields.add("arena.dead");
         requiredFields.add("inventory.start_gear");
+
+        forcedMaps.put("region.pvp.pvp",true);
+
     }
 
     private BukkitTask taskGame = null;

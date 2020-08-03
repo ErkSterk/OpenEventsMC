@@ -11,10 +11,12 @@ import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -26,6 +28,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class PlayerListener extends EventListener {
     public PlayerListener(Plugin plugin) {
@@ -129,21 +132,88 @@ public class PlayerListener extends EventListener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
+    public void onPlace(BlockPlaceEvent e) {
+        Player p = e.getPlayer();
+        Event ev = EventManager.getEventPlayerPartaking(p);
+        if (ev != null) {
+            switch (ev.getType()) {
+                //Overrides
+                //Default
+                default: {
+                    Block b = e.getBlock();
+                    boolean allow = false;
+                    for (Region r : ev.getArena().getAllRegionsAtLocation(b.getLocation())) {
+                        if (r.block_break) {
+                            allow = true;
+                            break;
+                        }
+                    }
+                    if (!allow) {
+                        e.setCancelled(true);
+                    }
+                    break;
+                }
+            }
+
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGH)
     public void onBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
         Event ev = EventManager.getEventPlayerPartaking(p);
         if (ev != null) {
             switch (ev.getType()) {
-                case SPLEEF:{
-                    if(e.getBlock().getType()==Material.SNOW_BLOCK) {
+                //Overrides
+                case SPLEEF: {
+                    if (e.getBlock().getType() == Material.SNOW_BLOCK) {
                         e.getBlock().setType(Material.AIR);
-                        p.getInventory().addItem(new ItemStack(Material.SNOW_BALL,1));
+                        p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 1));
                         e.setCancelled(true);
-                    }else{
+                    } else {
                         e.setCancelled(true);
                     }
+                    break;
+                }
+                //Default
+                default: {
+                    Block b = e.getBlock();
+                    boolean allow = false;
+                    for (Region r : ev.getArena().getAllRegionsAtLocation(b.getLocation())) {
+                        if (r.block_break) {
+                            allow = true;
+                            break;
+                        } else {
+                            if (r.breakIf.containsKey(b.getType())) {
+                                List<Material> a = r.breakIf.get(b.getType());
+                                if (a.contains(Material.AIR)) {
+                                    allow = true;
+                                    break;
+                                } else if (a.contains(b.getType())) {
+                                    allow = true;
+                                    break;
+                                }
+                            } else if (r.breakIf.containsKey(Material.AIR)) {
+                                //Wildcard Detected
+                                List<Material> a = r.breakIf.get(Material.AIR);
+                                if (a.contains(Material.AIR)) {
+                                    allow = true;
+                                    break;
+                                } else if (a.contains(b.getType())) {
+                                    allow = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (!allow) {
+                        e.setCancelled(true);
+                    }
+                    break;
                 }
             }
+
         }
     }
 
@@ -261,30 +331,15 @@ public class PlayerListener extends EventListener {
                 Event ev2 = EventManager.getEventPlayerPartaking(d);
                 if (ev1 != null && ev2 != null) {
                     if (ev1.getName().equalsIgnoreCase(ev2.getName())) {
-                        switch (ev2.getType()) {
-                            case REDROVER: {
-                                RedRover c = (RedRover) ev1;
-                                Region r = c.getArena().getRegionByname("pvp");
-                                if (!(c.getAllPlayersInRegionXZ(r).contains(k) && c.getAllPlayersInRegionXZ(r).contains(d))) {
-                                    e.setCancelled(true);
-                                }
-
+                        Region r = null;
+                        for (Region n : ev1.getArena().getAllRegions()) {
+                            if (n.isInBoundsXZ(k.getLocation())) {
+                                r = n;
+                                break;
                             }
-                            case LASTMANSTANDING: {
-                                LastManStanding c = (LastManStanding) ev1;
-                                Region r = c.getArena().getRegionByname("pvp");
-                                if (!(c.getAllPlayersInRegionXZ(r).contains(k) && c.getAllPlayersInRegionXZ(r).contains(d))) {
-                                    e.setCancelled(true);
-                                }
-
-                            }
-                            case WATERDROP:{
-                                e.setCancelled(true);
-                            }
-                            case SPLEEF:{
-                                e.setCancelled(true);
-                            }
-                            case WOOLSHUFFLE:{
+                        }
+                        if (r != null) {
+                            if (!r.pvp) {
                                 e.setCancelled(true);
                             }
                         }

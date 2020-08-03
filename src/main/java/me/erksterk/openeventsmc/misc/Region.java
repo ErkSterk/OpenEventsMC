@@ -1,8 +1,12 @@
 package me.erksterk.openeventsmc.misc;
 
+import me.erksterk.openeventsmc.events.Event;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Region {
@@ -10,8 +14,15 @@ public class Region {
     private Location min;
     private Location max;
     private String name;
+    public boolean pvp=false;
+    public boolean block_break=false;
 
-    public Region(Location l1, Location l2, String name) {
+    //Allow breaking if Key is tool and Value is block
+    //Putting Air as material acts as a wildcard
+    public HashMap<Material, List<Material>> breakIf = new HashMap<>();
+
+
+    public Region(Location l1, Location l2, String name, Event e) {
         this.name = name;
         World world = l1.getWorld();
         int xmin;
@@ -43,6 +54,15 @@ public class Region {
         }
         this.min = new Location(world, xmin, ymin, zmin);
         this.max = new Location(world, xmax, ymax, zmax);
+        if(e.forcedMaps.containsKey("region."+name+".pvp")){
+            pvp= (boolean) e.forcedMaps.get("region."+name+".pvp");
+        }
+        if(e.forcedMaps.containsKey("region."+name+".block_break")){
+           block_break= (boolean) e.forcedMaps.get("region."+name+".block_break");
+        }
+        if(e.forcedMaps.containsKey("region."+name+".breakIf")){
+            breakIf= (HashMap<Material, List<Material>>) e.forcedMaps.get("region."+name+".breakIf");
+        }
     }
 
     public Location getMin() {

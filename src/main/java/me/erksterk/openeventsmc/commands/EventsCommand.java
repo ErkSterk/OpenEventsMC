@@ -126,7 +126,7 @@ public class EventsCommand implements CommandExecutor {
                                                         Selection sel = Main.worldedit.getSelection(p);
                                                         if (sel != null) {
                                                             if (field.equalsIgnoreCase("arena.main")) {
-                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), "main");
+                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), "main",e);
                                                                 Arena a = new Arena(r);
                                                                 e.setArena(a);
                                                                 e.setFields.add("arena.main");
@@ -136,7 +136,7 @@ public class EventsCommand implements CommandExecutor {
                                                             } else {
                                                                 String[] spli = field.split("\\.");
                                                                 String rname = spli[1];
-                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), rname);
+                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), rname,e);
                                                                 Arena a = e.getArena();
                                                                 a.addRegion(r);
                                                                 e.setArena(a);

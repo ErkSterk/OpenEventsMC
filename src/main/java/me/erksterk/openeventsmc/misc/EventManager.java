@@ -72,7 +72,7 @@ public class EventManager {
                     String[] l2 = loc2.split("_");
                     Location m1 = new Location(Bukkit.getWorld(l1[0]), Integer.parseInt(l1[1]), Integer.parseInt(l1[2]), Integer.parseInt(l1[3]));
                     Location m2 = new Location(Bukkit.getWorld(l2[0]), Integer.parseInt(l2[1]), Integer.parseInt(l2[2]), Integer.parseInt(l2[3]));
-                    Region main = new Region(m1, m2, arena);
+                    Region main = new Region(m1, m2, arena,e);
 
                     Arena a;
                     if (arena.equalsIgnoreCase("main")) {

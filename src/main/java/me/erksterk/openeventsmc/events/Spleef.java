@@ -30,6 +30,13 @@ public class Spleef extends Event {
         requiredFields.add("arena.dead");
         requiredFields.add("arena.game");
         requiredFields.add("inventory.start_gear");
+
+        forcedMaps.put("region.game.block_break", false);
+        HashMap<Material, List<Material>> breakIf = new HashMap<>();
+        List<Material> conds = new ArrayList<>();
+        conds.add(Material.SNOW_BLOCK);
+        breakIf.put(Material.AIR, conds);
+        forcedMaps.put("region.game.breakIf", breakIf);
     }
 
     public void generateLocations() {
@@ -92,7 +99,7 @@ public class Spleef extends Event {
             }
         }
         if (alive.size() == 0) {
-            announceMessage(MessageUtils.translateMessage(Language.Spleef_nowinner,new HashMap<>()));
+            announceMessage(MessageUtils.translateMessage(Language.Spleef_nowinner, new HashMap<>()));
             Bukkit.getScheduler().runTask(Main.plugin, () -> {
                 resetSnow();
             });
@@ -103,10 +110,10 @@ public class Spleef extends Event {
             taskGame.cancel();
         } else if (alive.size() == 1) {
             Player p = alive.get(0);
-            HashMap<String,String> hm = new HashMap<>();
-            hm.put("%player%",p.getName());
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("%player%", p.getName());
             p.teleport(getArena().getRegionByname("wait").getRandomLoc());
-            announceMessage(MessageUtils.translateMessage(Language.Spleef_winner,hm));
+            announceMessage(MessageUtils.translateMessage(Language.Spleef_winner, hm));
             Bukkit.getScheduler().runTask(Main.plugin, () -> {
                 resetSnow();
             });
@@ -135,6 +142,7 @@ public class Spleef extends Event {
             }
         }, 0, 20);
     }
+
     private void clear() {
         getPlayers().clear();
         eliminated.clear();

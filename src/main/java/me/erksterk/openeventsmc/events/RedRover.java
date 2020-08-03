@@ -32,6 +32,8 @@ public class RedRover extends Event {
         requiredFields.add("arena.dead");
         requiredFields.add("config.traveltime");
         requiredFields.add("config.peacetime");
+
+        forcedMaps.put("region.pvp.pvp",true);
     }
 
     public void checkForWinner() {

@@ -41,6 +41,9 @@ public class OneInTheChamber extends Event {
         requiredFields.add("config.respawn_item_give_delay");
         requiredFields.add("inventory.start_gear");
         requiredFields.add("inventory.respawn_gear");
+
+        forcedMaps.put("region.player.pvp",true);
+
     }
 
 
