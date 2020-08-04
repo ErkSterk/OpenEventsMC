@@ -128,6 +128,19 @@ public class PlayerListener extends EventListener {
                         e.getDrops().clear();
                     }
                 }
+                case FIRSTTOLOC: {
+                    FirstToLocation sple = (FirstToLocation) ev;
+                    if (sple.running) {
+                        if(!sple.respawn){
+                            Player killed = e.getEntity();
+                            sple.eliminated.add(killed);
+                            HashMap<String, String> hm = new HashMap<>();
+                            hm.put("%killed%", killed.getName());
+                            sple.announceMessage(MessageUtils.translateMessage(Language.FTL_eliminated, hm));
+                            e.getDrops().clear();
+                        }
+                    }
+                }
             }
         }
     }
@@ -278,6 +291,18 @@ public class PlayerListener extends EventListener {
                     e.setRespawnLocation(l);
                     p.teleport(l);
                     break;
+                }
+                case FIRSTTOLOC:{
+                    FirstToLocation ftl = (FirstToLocation) ev;
+                    if(ftl.respawn) {
+                        Location l = ev.getArena().getRegionByname("spawn").getRandomLoc();
+                        e.setRespawnLocation(l);
+                        p.teleport(l);
+                    }else{
+                        Location l = ev.getArena().getRegionByname("dead").getRandomLoc();
+                        e.setRespawnLocation(l);
+                        p.teleport(l);
+                    }
                 }
             }
         }

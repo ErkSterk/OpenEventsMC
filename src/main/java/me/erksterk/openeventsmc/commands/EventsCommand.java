@@ -77,6 +77,11 @@ public class EventsCommand implements CommandExecutor {
                                             e.setType(EventType.WOOLSHUFFLE);
                                             break;
                                         }
+                                        case "firsttoloc": {
+                                            e = new FirstToLocation(eventname);
+                                            e.setType(EventType.FIRSTTOLOC);
+                                            break;
+                                        }
                                     }
                                     if (e != null) {
                                         if (EventManager.isEventNameAvailable(eventname)) {
@@ -153,10 +158,26 @@ public class EventsCommand implements CommandExecutor {
                                                             String fieldname = field.split("\\.")[1];
                                                             try {
                                                                 Field f1 = e.getClass().getField(fieldname);
-                                                                if (f1.getType().equals(int.class)) {
-                                                                    f1.set(e, Integer.parseInt(args[3]));
-                                                                } else {
-                                                                    f1.set(e, args[3]);
+                                                                switch(f1.getType().toString()){
+                                                                    case "int":{
+                                                                        f1.set(e, Integer.parseInt(args[3]));
+                                                                        break;
+                                                                    }
+                                                                    case "boolean":{
+                                                                        if(args[3].equalsIgnoreCase("false")){
+                                                                            f1.set(e, false);
+                                                                        }else if(args[3].equalsIgnoreCase("true")){
+                                                                            f1.set(e, true);
+                                                                        }else{
+                                                                            Main.writeToConsole(ChatColor.RED+"Configuration problem for "+e.getName()+" for boolean "+args[3]);
+                                                                            Main.writeToConsole(ChatColor.RED+"File an issue on github containing your events.yml file aswell ass the above message!");
+                                                                        }
+                                                                        break;
+                                                                    }
+                                                                    default:{
+                                                                        f1.set(e, args[3]);
+                                                                        break;
+                                                                    }
                                                                 }
                                                                 e.setFields.add(field);
                                                                 EventManager.setEvent(e);

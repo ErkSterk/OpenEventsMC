@@ -13,7 +13,7 @@ repositories {
 	maven { url "https://oss.sonatype.org/content/repositories/central/" }
 }
 group = "me.erksterk"
-version = "0.1"
+version = "alpha2"
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 

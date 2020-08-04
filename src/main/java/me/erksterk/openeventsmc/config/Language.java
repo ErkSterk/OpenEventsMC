@@ -73,4 +73,7 @@ public class Language {
     public static String Event_left_server="%tag% &c%player% has Left!";
     public static String Event_left_no_event="%tag% &cYou are not in an event!";
     public static String Event_join_already="%tag% &cYou are already in an event, leave the current one first!";
+    public static String FTL_winner="%tag% &a%player% Has won!";
+    public static String FTL_all_winner="%tag% &a%winners% won!";
+    public static String FTL_eliminated="%tag% &c%killed% was eliminated!";
 }

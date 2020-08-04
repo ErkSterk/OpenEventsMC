@@ -7,6 +7,7 @@ import me.erksterk.openeventsmc.libraries.clicktunnel.Gui;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiAction;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -61,6 +62,11 @@ public class EventManager {
                     e.setType(EventType.WOOLSHUFFLE);
                     break;
                 }
+                case "FIRSTTOLOC":{
+                    e = new FirstToLocation(eventname);
+                    e.setType(EventType.FIRSTTOLOC);
+                    break;
+                }
 
             }
             if (conf.getEvent().isConfigurationSection(eventname + ".arena")) {
@@ -90,10 +96,26 @@ public class EventManager {
                     String v = conf.getEvent().getString(eventname + ".config." + c);
                     try {
                         Field f1 = e.getClass().getField(c);
-                        if (f1.getType().equals(int.class)) {
-                            f1.set(e, Integer.parseInt(v));
-                        } else {
-                            f1.set(e, v);
+                        switch(f1.getType().toString()){
+                            case "int":{
+                                f1.set(e, Integer.parseInt(v));
+                                break;
+                            }
+                            case "boolean":{
+                                if(v.equalsIgnoreCase("false")){
+                                    f1.set(e, false);
+                                }else if(v.equalsIgnoreCase("true")){
+                                    f1.set(e, true);
+                                }else{
+                                    Main.writeToConsole(ChatColor.RED+"Configuration problem for "+eventname+" for boolean "+v);
+                                    Main.writeToConsole(ChatColor.RED+"File an issue on github containing your events.yml file aswell ass the above message!");
+                                }
+                                break;
+                            }
+                            default:{
+                                f1.set(e, v);
+                                break;
+                            }
                         }
                         e.setFields.add("config." + c);
                     } catch (NoSuchFieldException ex) {

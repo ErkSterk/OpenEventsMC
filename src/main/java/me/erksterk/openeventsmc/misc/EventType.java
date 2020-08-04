@@ -6,5 +6,6 @@ public enum EventType {
     REDROVER,
     LASTMANSTANDING,
     SPLEEF,
-    WOOLSHUFFLE
+    WOOLSHUFFLE,
+    FIRSTTOLOC
 }
