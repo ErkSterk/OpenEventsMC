@@ -3,6 +3,8 @@ package me.erksterk.openeventsmc.misc;
 import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.ConfigManager;
 import me.erksterk.openeventsmc.events.*;
+import me.erksterk.openeventsmc.events.LastManStanding;
+import me.erksterk.openeventsmc.events.OITC.OneInTheChamber;
 import me.erksterk.openeventsmc.libraries.clicktunnel.Gui;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiAction;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiManager;
@@ -13,7 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Wool;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

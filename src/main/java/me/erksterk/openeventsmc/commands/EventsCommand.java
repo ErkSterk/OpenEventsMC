@@ -4,6 +4,8 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.Language;
 import me.erksterk.openeventsmc.events.*;
+import me.erksterk.openeventsmc.events.LastManStanding;
+import me.erksterk.openeventsmc.events.OITC.OneInTheChamber;
 import me.erksterk.openeventsmc.events.Waterdrop;
 import me.erksterk.openeventsmc.libraries.clicktunnel.Gui;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiAction;

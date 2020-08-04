@@ -3,6 +3,7 @@ package me.erksterk.openeventsmc.events;
 import me.erksterk.openeventsmc.Main;
 import me.erksterk.openeventsmc.config.Config;
 import me.erksterk.openeventsmc.config.Language;
+import me.erksterk.openeventsmc.events.Event;
 import me.erksterk.openeventsmc.misc.EventStatus;
 import me.erksterk.openeventsmc.misc.Region;
 import me.erksterk.openeventsmc.utils.MessageUtils;
