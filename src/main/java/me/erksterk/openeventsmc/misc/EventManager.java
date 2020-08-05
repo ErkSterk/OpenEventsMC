@@ -5,6 +5,7 @@ import me.erksterk.openeventsmc.config.ConfigManager;
 import me.erksterk.openeventsmc.events.*;
 import me.erksterk.openeventsmc.events.LastManStanding;
 import me.erksterk.openeventsmc.events.OITC.OneInTheChamber;
+import me.erksterk.openeventsmc.events.Sumo.SumoFFA;
 import me.erksterk.openeventsmc.libraries.clicktunnel.Gui;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiAction;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiManager;
@@ -66,6 +67,11 @@ public class EventManager {
                 case "FIRSTTOLOC":{
                     e = new FirstToLocation(eventname);
                     e.setType(EventType.FIRSTTOLOC);
+                    break;
+                }
+                case "SUMO_FFA":{
+                    e = new SumoFFA(eventname);
+                    e.setType(EventType.SUMO_FFA);
                     break;
                 }
 
@@ -159,9 +165,15 @@ public class EventManager {
             case LASTMANSTANDING:
                 return Material.GOLDEN_APPLE;
             case REDROVER:
-                return Material.WOOL;
+                return Material.REDSTONE_BLOCK;
             case ONEINTHECHAMBER:
                 return Material.BOW;
+            case FIRSTTOLOC:
+                return Material.LEATHER_BOOTS;
+            case WOOLSHUFFLE:
+                return Material.WOOL;
+            case SUMO_FFA:
+                return Material.INK_SACK;
             default:
                 return Material.DIRT;
         }

@@ -47,7 +47,7 @@ public class Main extends JavaPlugin {
         plugin = this;
         console = Bukkit.getConsoleSender();
         writeToConsole("&cStarting loading of OpenEventsMC");
-        worldedit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("worldedit");
+        worldedit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         version = getDescription().getVersion();
         ClickTunnel.register(this);
         if (!getDataFolder().exists()) {
@@ -57,8 +57,8 @@ public class Main extends JavaPlugin {
 
         GuiManager.createGui("Events", 54, "EventsMain");
         Gui g = GuiManager.getGuiFromId("EventsMain");
-        int slot=0;
-        for(EventType type : EventType.values()) {
+        int slot = 0;
+        for (EventType type : EventType.values()) {
             ItemStack it = new ItemStack(EventManager.getMaterialForMenu(type), 1);
             ItemMeta im = it.getItemMeta();
             im.setDisplayName(type.name());
@@ -69,7 +69,7 @@ public class Main extends JavaPlugin {
             slot++;
         }
 
-        for(EventType type : EventType.values()){
+        for (EventType type : EventType.values()) {
             GuiManager.createGui(type.name(), 9, type.name());
         }
 

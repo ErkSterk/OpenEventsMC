@@ -7,5 +7,6 @@ public enum EventType {
     LASTMANSTANDING,
     SPLEEF,
     WOOLSHUFFLE,
-    FIRSTTOLOC
+    FIRSTTOLOC,
+    SUMO_FFA;
 }

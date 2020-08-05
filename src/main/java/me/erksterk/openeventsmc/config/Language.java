@@ -76,4 +76,7 @@ public class Language {
     public static String FTL_winner="%tag% &a%player% Has won!";
     public static String FTL_all_winner="%tag% &a%winners% won!";
     public static String FTL_eliminated="%tag% &c%killed% was eliminated!";
+    public static String Sumo_eliminated="%tag% &c%player% was eliminated!";
+    public static String Sumo_no_winner="%tag% &cNobody survived!";
+    public static String Sumo_winner="%tag% &a%player% won the event!";
 }

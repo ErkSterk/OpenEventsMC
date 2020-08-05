@@ -6,6 +6,7 @@ import me.erksterk.openeventsmc.config.Language;
 import me.erksterk.openeventsmc.events.*;
 import me.erksterk.openeventsmc.events.LastManStanding;
 import me.erksterk.openeventsmc.events.OITC.OneInTheChamber;
+import me.erksterk.openeventsmc.events.Sumo.SumoFFA;
 import me.erksterk.openeventsmc.events.Waterdrop;
 import me.erksterk.openeventsmc.libraries.clicktunnel.Gui;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiAction;
@@ -82,6 +83,11 @@ public class EventsCommand implements CommandExecutor {
                                         case "firsttoloc": {
                                             e = new FirstToLocation(eventname);
                                             e.setType(EventType.FIRSTTOLOC);
+                                            break;
+                                        }
+                                        case "ffasumo": {
+                                            e = new SumoFFA(eventname);
+                                            e.setType(EventType.SUMO_FFA);
                                             break;
                                         }
                                     }
