@@ -19,9 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Spleef extends Event {
+
     BukkitTask taskGame;
 
     public List<Location> snow = new ArrayList<>();
+
+    public boolean snowball_block_break;
 
     public Spleef(String name) {
         super(name);
@@ -29,6 +32,7 @@ public class Spleef extends Event {
         requiredFields.add("arena.wait");
         requiredFields.add("arena.dead");
         requiredFields.add("arena.game");
+        requiredFields.add("config.snowball_block_break");
         requiredFields.add("inventory.start_gear");
 
         forcedMaps.put("region.game.block_break", false);

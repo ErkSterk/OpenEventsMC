@@ -7,6 +7,7 @@ import me.erksterk.openeventsmc.events.*;
 import me.erksterk.openeventsmc.events.LastManStanding;
 import me.erksterk.openeventsmc.events.OITC.OneInTheChamber;
 import me.erksterk.openeventsmc.misc.EventManager;
+import me.erksterk.openeventsmc.misc.EventType;
 import me.erksterk.openeventsmc.misc.Region;
 import me.erksterk.openeventsmc.utils.MessageUtils;
 import org.bukkit.Bukkit;
@@ -21,12 +22,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -116,6 +119,7 @@ public class PlayerListener extends EventListener {
                         }
                         e.getDrops().clear();
                     }
+                    break;
                 }
                 case SPLEEF: {
                     Spleef sple = (Spleef) ev;
@@ -127,11 +131,12 @@ public class PlayerListener extends EventListener {
                         sple.announceMessage(MessageUtils.translateMessage(Language.Spleef_eliminated, hm));
                         e.getDrops().clear();
                     }
+                    break;
                 }
                 case FIRSTTOLOC: {
                     FirstToLocation sple = (FirstToLocation) ev;
                     if (sple.running) {
-                        if(!sple.respawn){
+                        if (!sple.respawn) {
                             Player killed = e.getEntity();
                             sple.eliminated.add(killed);
                             HashMap<String, String> hm = new HashMap<>();
@@ -140,6 +145,7 @@ public class PlayerListener extends EventListener {
                             e.getDrops().clear();
                         }
                     }
+                    break;
                 }
             }
         }
@@ -292,16 +298,47 @@ public class PlayerListener extends EventListener {
                     p.teleport(l);
                     break;
                 }
-                case FIRSTTOLOC:{
+                case FIRSTTOLOC: {
                     FirstToLocation ftl = (FirstToLocation) ev;
-                    if(ftl.respawn) {
+                    if (ftl.respawn) {
                         Location l = ev.getArena().getRegionByname("spawn").getRandomLoc();
                         e.setRespawnLocation(l);
                         p.teleport(l);
-                    }else{
+                    } else {
                         Location l = ev.getArena().getRegionByname("dead").getRandomLoc();
                         e.setRespawnLocation(l);
                         p.teleport(l);
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onHit(ProjectileHitEvent e) {
+        Entity snowball = e.getEntity();
+        if (e.getEntity().getShooter() instanceof Player) {
+            Player p = (Player) e.getEntity().getShooter();
+            Event event = EventManager.getEventPlayerPartaking(p);
+            if (event != null) {
+                if (event.getType() == EventType.SPLEEF) {
+                    Spleef spleef = (Spleef) event;
+
+                    if (event.running) {
+
+                            if (snowball instanceof Snowball) {
+                                if (spleef.snowball_block_break) {
+                                Location loc = snowball.getLocation();
+                                Vector vec = snowball.getVelocity();
+                                Location loc2 = new Location(loc.getWorld(), loc.getX() + vec.getX(), loc.getY() + vec.getY(), loc.getZ() + vec.getZ());
+                                if (event.getArena().getRegionByname("game").isInBounds(loc2)) {
+                                    Block s = loc2.getBlock();
+                                    if (s.getType() == Material.SNOW_BLOCK) {
+                                        s.setType(Material.AIR);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -381,9 +418,9 @@ public class PlayerListener extends EventListener {
         Event ev = EventManager.getEventPlayerPartaking(p);
         if (ev != null) {
             ev.leavePlayer(p);
-            HashMap<String,String> hm = new HashMap<>();
-            hm.put("%player%",p.getName());
-            ev.announceMessage(MessageUtils.translateMessage(Language.Event_left_server,hm));
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("%player%", p.getName());
+            ev.announceMessage(MessageUtils.translateMessage(Language.Event_left_server, hm));
         }
 
     }
