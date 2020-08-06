@@ -33,6 +33,7 @@ public class Gui {
             }
             if(action.commandsPlayer.size()>0){
                 for(String s : action.commandsPlayer){
+                    System.out.println(s);
                     Bukkit.dispatchCommand(p,s.replace("%player%",p.getName()));
                 }
             }

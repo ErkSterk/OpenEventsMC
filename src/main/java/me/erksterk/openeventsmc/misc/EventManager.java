@@ -193,7 +193,7 @@ public class EventManager {
 
     public static void loadChangesForMenu() {
         for (EventType t : EventType.values()) {
-            Gui gui = GuiManager.getGuiFromId(t.toString());
+            Gui gui = GuiManager.getGuiFromId("event_"+t.toString());
             int slot = 0;
             gui.guiInv.clear();
             for (Event e : EventManager.getAllEventsOfType(t)) {

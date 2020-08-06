@@ -379,6 +379,26 @@ public class EventsCommand implements CommandExecutor {
                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
                                                 break;
                                             }
+                                            case SPLEEF:{
+                                                e.revivePlayer(p, e.getArena().getRegionByname("wait"));
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
+                                                break;
+                                            }
+                                            case FIRSTTOLOC:{
+                                                e.revivePlayer(p, e.getArena().getRegionByname("wait"));
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
+                                                break;
+                                            }
+                                            case SUMO_FFA:{
+                                                e.revivePlayer(p, e.getArena().getRegionByname("wait"));
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
+                                                break;
+                                            }
+                                            case WOOLSHUFFLE:{
+                                                e.revivePlayer(p, e.getArena().getRegionByname("wait"));
+                                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
+                                                break;
+                                            }
                                             default: {
                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_event_norevive, new HashMap<>()));
                                             }
@@ -410,8 +430,8 @@ public class EventsCommand implements CommandExecutor {
                             Player p = (Player) sender;
                             Event e = EventManager.getEventByHoster(p);
                             if (e != null) {
-                                GuiManager.createGui(e.getName(), 9, e.getName());
-                                Gui g = GuiManager.getGuiFromId(e.getName());
+                                GuiManager.createGui("manage_"+e.getName(), 9, "manage_"+e.getName());
+                                Gui g = GuiManager.getGuiFromId("manage_"+e.getName());
 
                                 ItemStack pause = new ItemStack(Material.WOOL, 1);
                                 ItemMeta pauseim = pause.getItemMeta();

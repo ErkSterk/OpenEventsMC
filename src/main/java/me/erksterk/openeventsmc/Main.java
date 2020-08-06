@@ -64,13 +64,13 @@ public class Main extends JavaPlugin {
             im.setDisplayName(type.name());
             it.setItemMeta(im);
             GuiAction action = new GuiAction(true);
-            action.openGui = type.name();
+            action.openGui = "event_"+type.name();
             g.setItem(it, slot, action);
             slot++;
         }
 
         for (EventType type : EventType.values()) {
-            GuiManager.createGui(type.name(), 9, type.name());
+            GuiManager.createGui("event_"+type.name(), 9, "event_"+type.name());
         }
 
         configManager.setup(this);
