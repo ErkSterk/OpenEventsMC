@@ -19,6 +19,7 @@ public class Event {
 
 
     public boolean running = false;
+    public boolean deleted = true;
     private List<Player> players = new ArrayList<>();
     public List<Player> eliminated = new ArrayList<>();
 

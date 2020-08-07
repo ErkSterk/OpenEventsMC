@@ -79,4 +79,6 @@ public class Language {
     public static String Sumo_eliminated="%tag% &c%player% was eliminated!";
     public static String Sumo_no_winner="%tag% &cNobody survived!";
     public static String Sumo_winner="%tag% &a%player% won the event!";
+    public static String Command_delete_deleted="%tag% &aEvent was deleted!";
+    public static String Command_delete_missing_name="%tag% &cMissing Eventname!";
 }

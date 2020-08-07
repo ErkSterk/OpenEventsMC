@@ -221,59 +221,68 @@ public class EventManager {
     }
 
     public static void saveEventsToConfig() {
-
+        List<Event> deleted = new ArrayList<>();
         for (Event e : events) {
-            conf.getEvent().set(e.getName() + ".name", e.getName());
-            conf.getEvent().set(e.getName() + ".type", e.getType().toString());
-            Arena a = e.getArena();
-            try {
-                if (a != null) {
-                    Region m = a.getArenaBoundRegion();
-                    if (m != null) {
-                        conf.getEvent().set(e.getName() + ".arena.main.loc1", m.getMin().getWorld().getName() + "_" + m.getMin().getBlockX() + "_" + m.getMin().getBlockY() + "_" + m.getMin().getBlockZ());
-                        conf.getEvent().set(e.getName() + ".arena.main.loc2", m.getMax().getWorld().getName() + "_" + m.getMax().getBlockX() + "_" + m.getMax().getBlockY() + "_" + m.getMax().getBlockZ());
-                    }
-                    for (Region r : a.getAllRegions()) {
-                        conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc1", r.getMin().getWorld().getName() + "_" + r.getMin().getBlockX() + "_" + r.getMin().getBlockY() + "_" + r.getMin().getBlockZ());
-                        conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc2", r.getMax().getWorld().getName() + "_" + r.getMax().getBlockX() + "_" + r.getMax().getBlockY() + "_" + r.getMax().getBlockZ());
-                    }
-                }
-            } catch (NullPointerException ex) {
-                System.out.println("No arena found!");
-            }
-            for (String c : e.requiredFields) {
-                if (c.contains("config.")) {
-                    String f = c.split("\\.")[1];
-                    String v = null;
-                    try {
-                        Field f1 = e.getClass().getField(f);
-                        v = String.valueOf(f1.get(e));
-                    } catch (NoSuchFieldException ex) {
-
-                    } catch (IllegalAccessException ex) {
-
-                    }
-                    conf.getEvent().set(e.getName() + "." + c, v);
-                } else if (c.contains("inventory.")) {
-                    if (c.equalsIgnoreCase("inventory.start_gear")) {
-                        List<ItemStack> li = e.getEventStartGear();
-                        int i = 0;
-                        for (ItemStack it : li) {
-                            conf.getEvent().set(e.getName() + "." + c + "." + i, it);
-                            i++;
+            if(!e.deleted) {
+                conf.getEvent().set(e.getName() + ".name", e.getName());
+                conf.getEvent().set(e.getName() + ".type", e.getType().toString());
+                Arena a = e.getArena();
+                try {
+                    if (a != null) {
+                        Region m = a.getArenaBoundRegion();
+                        if (m != null) {
+                            conf.getEvent().set(e.getName() + ".arena.main.loc1", m.getMin().getWorld().getName() + "_" + m.getMin().getBlockX() + "_" + m.getMin().getBlockY() + "_" + m.getMin().getBlockZ());
+                            conf.getEvent().set(e.getName() + ".arena.main.loc2", m.getMax().getWorld().getName() + "_" + m.getMax().getBlockX() + "_" + m.getMax().getBlockY() + "_" + m.getMax().getBlockZ());
                         }
-                    } else if (c.equalsIgnoreCase("inventory.respawn_gear")) {
-                        List<ItemStack> li = e.respawn_gear;
-                        int i = 0;
-                        for (ItemStack it : li) {
-                            conf.getEvent().set(e.getName() + "." + c + "." + i, it);
-                            i++;
+                        for (Region r : a.getAllRegions()) {
+                            conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc1", r.getMin().getWorld().getName() + "_" + r.getMin().getBlockX() + "_" + r.getMin().getBlockY() + "_" + r.getMin().getBlockZ());
+                            conf.getEvent().set(e.getName() + ".arena." + r.getName() + ".loc2", r.getMax().getWorld().getName() + "_" + r.getMax().getBlockX() + "_" + r.getMax().getBlockY() + "_" + r.getMax().getBlockZ());
                         }
                     }
+                } catch (NullPointerException ex) {
+                    System.out.println("No arena found!");
                 }
+                for (String c : e.requiredFields) {
+                    if (c.contains("config.")) {
+                        String f = c.split("\\.")[1];
+                        String v = null;
+                        try {
+                            Field f1 = e.getClass().getField(f);
+                            v = String.valueOf(f1.get(e));
+                        } catch (NoSuchFieldException ex) {
+
+                        } catch (IllegalAccessException ex) {
+
+                        }
+                        conf.getEvent().set(e.getName() + "." + c, v);
+                    } else if (c.contains("inventory.")) {
+                        if (c.equalsIgnoreCase("inventory.start_gear")) {
+                            List<ItemStack> li = e.getEventStartGear();
+                            int i = 0;
+                            for (ItemStack it : li) {
+                                conf.getEvent().set(e.getName() + "." + c + "." + i, it);
+                                i++;
+                            }
+                        } else if (c.equalsIgnoreCase("inventory.respawn_gear")) {
+                            List<ItemStack> li = e.respawn_gear;
+                            int i = 0;
+                            for (ItemStack it : li) {
+                                conf.getEvent().set(e.getName() + "." + c + "." + i, it);
+                                i++;
+                            }
+                        }
+                    }
+                }
+            }else{
+                conf.getEvent().set(e.getName(),null);
+                deleted.add(e);
             }
             conf.saveEvent();
         }
+        for(Event e : deleted){
+            events.remove(e);
+        }
+        deleted.clear();
         loadChangesForMenu();
     }
 
@@ -283,7 +292,7 @@ public class EventManager {
     }
 
     public static void deleteEvent(Event e) {
-        events.remove(e);
+        e.deleted=true;
         saveEventsToConfig();
     }
 

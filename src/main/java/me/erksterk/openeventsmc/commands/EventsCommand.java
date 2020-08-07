@@ -111,6 +111,24 @@ public class EventsCommand implements CommandExecutor {
                         }
                         break;
                     }
+                    case "delete":{
+                        if(sender.hasPermission("oemc.events.delete")) {
+                            if (args.length == 1) {
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Command_delete_missing_name, new HashMap<>()));
+                            } else {
+                                Event e = EventManager.getEventFromName(args[1]);
+                                if(e!=null){
+                                    EventManager.deleteEvent(e);
+                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_delete_deleted, new HashMap<>()));
+                                }else{
+                                    sender.sendMessage(MessageUtils.translateMessage(Language.Command_event_not_found, new HashMap<>()));
+                                }
+                            }
+                        } else {
+                            sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
+                        }
+                        break;
+                    }
                     case "setup": {
                         if (sender.hasPermission("oemc.events.setup")) {
                             Player p = (Player) sender;
@@ -139,7 +157,7 @@ public class EventsCommand implements CommandExecutor {
                                                         Selection sel = Main.worldedit.getSelection(p);
                                                         if (sel != null) {
                                                             if (field.equalsIgnoreCase("arena.main")) {
-                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), "main",e);
+                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), "main", e);
                                                                 Arena a = new Arena(r);
                                                                 e.setArena(a);
                                                                 e.setFields.add("arena.main");
@@ -149,7 +167,7 @@ public class EventsCommand implements CommandExecutor {
                                                             } else {
                                                                 String[] spli = field.split("\\.");
                                                                 String rname = spli[1];
-                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), rname,e);
+                                                                Region r = new Region(sel.getMinimumPoint(), sel.getMaximumPoint(), rname, e);
                                                                 Arena a = e.getArena();
                                                                 a.addRegion(r);
                                                                 e.setArena(a);
@@ -166,23 +184,23 @@ public class EventsCommand implements CommandExecutor {
                                                             String fieldname = field.split("\\.")[1];
                                                             try {
                                                                 Field f1 = e.getClass().getField(fieldname);
-                                                                switch(f1.getType().toString()){
-                                                                    case "int":{
+                                                                switch (f1.getType().toString()) {
+                                                                    case "int": {
                                                                         f1.set(e, Integer.parseInt(args[3]));
                                                                         break;
                                                                     }
-                                                                    case "boolean":{
-                                                                        if(args[3].equalsIgnoreCase("false")){
+                                                                    case "boolean": {
+                                                                        if (args[3].equalsIgnoreCase("false")) {
                                                                             f1.set(e, false);
-                                                                        }else if(args[3].equalsIgnoreCase("true")){
+                                                                        } else if (args[3].equalsIgnoreCase("true")) {
                                                                             f1.set(e, true);
-                                                                        }else{
-                                                                            Main.writeToConsole(ChatColor.RED+"Configuration problem for "+e.getName()+" for boolean "+args[3]);
-                                                                            Main.writeToConsole(ChatColor.RED+"File an issue on github containing your events.yml file aswell ass the above message!");
+                                                                        } else {
+                                                                            Main.writeToConsole(ChatColor.RED + "Configuration problem for " + e.getName() + " for boolean " + args[3]);
+                                                                            Main.writeToConsole(ChatColor.RED + "File an issue on github containing your events.yml file aswell ass the above message!");
                                                                         }
                                                                         break;
                                                                     }
-                                                                    default:{
+                                                                    default: {
                                                                         f1.set(e, args[3]);
                                                                         break;
                                                                     }
@@ -304,8 +322,8 @@ public class EventsCommand implements CommandExecutor {
                             Player p = (Player) sender;
                             Event ev = EventManager.getEventPlayerPartaking(p);
                             if (ev != null) {
-                                p.sendMessage(MessageUtils.translateMessage(Language.Event_join_already,new HashMap<>()));
-                            }else {
+                                p.sendMessage(MessageUtils.translateMessage(Language.Event_join_already, new HashMap<>()));
+                            } else {
                                 if (args.length == 1) {
                                     sender.sendMessage(MessageUtils.translateMessage(Language.Command_join_missing_event, new HashMap<>()));
                                 } else {
@@ -329,7 +347,7 @@ public class EventsCommand implements CommandExecutor {
                         }
                         break;
                     }
-                    case "leave":{
+                    case "leave": {
                         if (sender.hasPermission("oemc.events.leave")) {
                             Player p = (Player) sender;
                             Event ev = EventManager.getEventPlayerPartaking(p);
@@ -338,10 +356,10 @@ public class EventsCommand implements CommandExecutor {
                                 hm.put("%player%", p.getName());
                                 ev.announceMessage(MessageUtils.translateMessage(Language.Event_left_server, hm));
                                 ev.leavePlayer(p);
-                            }else{
-                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_left_no_event,new HashMap<>()));
+                            } else {
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_left_no_event, new HashMap<>()));
                             }
-                        }else {
+                        } else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
                         }
                         break;
@@ -379,22 +397,22 @@ public class EventsCommand implements CommandExecutor {
                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
                                                 break;
                                             }
-                                            case SPLEEF:{
+                                            case SPLEEF: {
                                                 e.revivePlayer(p, e.getArena().getRegionByname("wait"));
                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
                                                 break;
                                             }
-                                            case FIRSTTOLOC:{
+                                            case FIRSTTOLOC: {
                                                 e.revivePlayer(p, e.getArena().getRegionByname("wait"));
                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
                                                 break;
                                             }
-                                            case SUMO_FFA:{
+                                            case SUMO_FFA: {
                                                 e.revivePlayer(p, e.getArena().getRegionByname("wait"));
                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
                                                 break;
                                             }
-                                            case WOOLSHUFFLE:{
+                                            case WOOLSHUFFLE: {
                                                 e.revivePlayer(p, e.getArena().getRegionByname("wait"));
                                                 sender.sendMessage(MessageUtils.translateMessage(Language.Command_revive_revived, new HashMap<>()));
                                                 break;
@@ -430,8 +448,8 @@ public class EventsCommand implements CommandExecutor {
                             Player p = (Player) sender;
                             Event e = EventManager.getEventByHoster(p);
                             if (e != null) {
-                                GuiManager.createGui("manage_"+e.getName(), 9, "manage_"+e.getName());
-                                Gui g = GuiManager.getGuiFromId("manage_"+e.getName());
+                                GuiManager.createGui("manage_" + e.getName(), 9, "manage_" + e.getName());
+                                Gui g = GuiManager.getGuiFromId("manage_" + e.getName());
 
                                 ItemStack pause = new ItemStack(Material.WOOL, 1);
                                 ItemMeta pauseim = pause.getItemMeta();
@@ -461,7 +479,7 @@ public class EventsCommand implements CommandExecutor {
 
                                 p.openInventory(g.guiInv);
                             } else {
-                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_host_none,new HashMap<>()));
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_host_none, new HashMap<>()));
                             }
                         } else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));
@@ -473,11 +491,11 @@ public class EventsCommand implements CommandExecutor {
                             Player p = (Player) sender;
                             Event e = EventManager.getEventByHoster(p);
                             if (e != null) {
-                                GuiManager.createGui(e.getName()+"_revive", 54, e.getName()+"_revive");
-                                Gui g = GuiManager.getGuiFromId(e.getName()+"_revive");
+                                GuiManager.createGui(e.getName() + "_revive", 54, e.getName() + "_revive");
+                                Gui g = GuiManager.getGuiFromId(e.getName() + "_revive");
 
                                 int slot = 0;
-                                for(Player el : e.eliminated) {
+                                for (Player el : e.eliminated) {
                                     ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1);
                                     SkullMeta m = (SkullMeta) skull.getItemMeta();
                                     m.setOwner(el.getName());
@@ -486,14 +504,14 @@ public class EventsCommand implements CommandExecutor {
 
                                     GuiAction pauseAction = new GuiAction(true);
                                     pauseAction.commandsPlayer.add("events revive " + el.getName());
-                                    pauseAction.closeGui=true;
+                                    pauseAction.closeGui = true;
                                     g.setItem(skull, slot, pauseAction);
                                     slot++;
                                 }
 
                                 p.openInventory(g.guiInv);
-                            }else{
-                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_host_none,new HashMap<>()));
+                            } else {
+                                sender.sendMessage(MessageUtils.translateMessage(Language.Event_host_none, new HashMap<>()));
                             }
                         } else {
                             sender.sendMessage(MessageUtils.translateMessage(Language.Command_No_Permission, new HashMap<>()));

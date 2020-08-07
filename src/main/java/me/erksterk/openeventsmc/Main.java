@@ -5,6 +5,7 @@ import me.erksterk.openeventsmc.config.Config;
 import me.erksterk.openeventsmc.config.ConfigManager;
 import me.erksterk.openeventsmc.config.Language;
 import me.erksterk.openeventsmc.events.Event;
+import me.erksterk.openeventsmc.libraries.bStats.Metrics;
 import me.erksterk.openeventsmc.libraries.clicktunnel.ClickTunnel;
 import me.erksterk.openeventsmc.libraries.clicktunnel.Gui;
 import me.erksterk.openeventsmc.libraries.clicktunnel.GuiAction;
@@ -54,7 +55,6 @@ public class Main extends JavaPlugin {
             getDataFolder().mkdirs();
         }
         getCommand("events").setExecutor(new EventsCommand());
-
         GuiManager.createGui("Events", 54, "EventsMain");
         Gui g = GuiManager.getGuiFromId("EventsMain");
         int slot = 0;
@@ -94,6 +94,11 @@ public class Main extends JavaPlugin {
         EventManager.loadEventsFromConfig();
 
         new PlayerListener(this);
+
+        if(Config.bStats_Metrics){
+            Metrics metrics = new Metrics(this,8445);
+        }
+
     }
 
     //Returns true if the the dependency is missing
