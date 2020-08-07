@@ -17,6 +17,8 @@ RedRover<br>
 LastManStanding<br>
 Spleef<br>
 Woolshuffle<br>
+FirstToLoc<br>
+FFASumo<br>
 
 ### What we are planning to add in the future:
 Check out the issues page, there should be issues on what we are working on.<br>
